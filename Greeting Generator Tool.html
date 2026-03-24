@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIS Greeting Generator | Custom Cards</title>
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* Main Container */
+        .generator-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background: transparent;
+        }
+
+        /* Left Panel - Controls */
+        .controls-panel {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            height: fit-content;
+            position: sticky;
+            top: 40px;
+        }
+
+        .controls-panel h2 {
+            color: #1a2e45;
+            margin-bottom: 24px;
+            font-size: 24px;
+            border-left: 4px solid #cba456;
+            padding-left: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #cba456;
+            box-shadow: 0 0 0 3px rgba(203, 164, 86, 0.1);
+        }
+
+        .conditional-field {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .conditional-field.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: #f0f2f5;
+            color: #2c3e50;
+            border: 1px solid #e1e8ed;
+        }
+
+        .btn-secondary:hover {
+            background: #e4e6e9;
+        }
+
+        /* Right Panel - Preview */
+        .preview-panel {
+            background: transparent;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .preview-header {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .preview-header h3 {
+            color: #1a2e45;
+            font-size: 18px;
+        }
+
+        .preview-header p {
+            color: #7f8c8d;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Greeting Card Styles - Sharp edges (no border radius) */
+        .greeting-card {
+            background: #ffffff;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            position: relative;
+            transition: transform 0.3s ease;
+            border-radius: 0;
+        }
+
+        .greeting-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-footer-bar {
+            background: #1a2e45;
+            color: #fff;
+            text-align: center;
+            padding: 12px;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        .card-content {
+            display: flex;
+            min-height: 550px;
+            position: relative;
+        }
+
+        /* Left Side - Decorative with sharp edges */
+        .card-left {
+            width: 35%;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-left.birthday-bg {
+            background-image: url('https://plus.unsplash.com/premium_photo-1677221924410-0d27f4940396?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8YmlydGhkYXl8ZW58MHx8MHx8fDA%3D');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-left.marriage-bg {
+            background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80');
+        }
+
+        .card-left.showroom-bg {
+            background-image: url('https://images.unsplash.com/photo-1565031491910-e57fac031c41?w=800&auto=format&fit=crop&q=80');
+        }
+
+        .card-left::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
+        }
+
+        .decoration-text {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 60px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.25);
+            line-height: 1;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        /* Right Side - Content */
+        .card-right {
+            width: 65%;
+            padding: 32px 36px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .ais-logo {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .greeting-badge {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(ellipse at center, #f2dba6 0%, #cba456 100%);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 2px solid #fff;
+            text-align: center;
+        }
+
+        .greeting-badge span:first-child {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .greeting-badge span:last-child {
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .greeting-subtitle {
+            color: #cba456;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 11px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .greeting-title {
+            color: #2c3e50;
+            font-size: 28px;
+            margin: 0 0 20px 0;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .greeting-title .highlight {
+            color: #cba456;
+        }
+
+        .greeting-message {
+            color: #555;
+            line-height: 1.7;
+            font-size: 14px;
+            margin-bottom: 28px;
+            border-left: 2px solid #f2dba6;
+            padding-left: 20px;
+            flex: 1;
+        }
+
+        .signature-area {
+            margin-top: auto;
+        }
+
+        .signature-img {
+            height: 45px;
+            width: auto;
+            margin-bottom: 12px;
+        }
+
+        .signature-name {
+            font-weight: 800;
+            color: #1a2e45;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .signature-title {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 2px 0;
+            font-weight: 600;
+        }
+
+        .signature-company {
+            font-weight: bold;
+            font-size: 11px;
+            color: #1a2e45;
+            margin-top: 4px;
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .generator-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .controls-panel {
+                position: relative;
+                top: 0;
+            }
+            
+            .card-content {
+                flex-direction: column;
+            }
+            
+            .card-left {
+                width: 100%;
+                height: 150px;
+            }
+            
+            .card-right {
+                width: 100%;
+                padding: 24px;
+            }
+            
+            .decoration-text {
+                font-size: 40px;
+                bottom: 10px;
+                left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="generator-container">
+        <!-- Left Panel - Controls -->
+        <div class="controls-panel">
+            <h2>✨ Greeting Generator</h2>
+            
+            <div class="form-group">
+                <label>🎉 Greeting Type</label>
+                <select id="greetingType">
+                    <option value="birthday">🎂 Birthday</option>
+                    <option value="marriage">💍 Marriage Anniversary</option>
+                    <option value="showroom">🏢 Showroom Anniversary</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>👤 Dealer Name</label>
+                <input type="text" id="dealerName" placeholder="Enter dealer name" value="Mr. Arpit">
+            </div>
+            
+            <div id="showroomFields" class="conditional-field">
+                <div class="form-group">
+                    <label>🏬 Showroom Name</label>
+                    <input type="text" id="showroomName" placeholder="Enter showroom name" value="Pune Showroom">
+                </div>
+                <div class="form-group">
+                    <label>🎂 Anniversary Number</label>
+                    <input type="number" id="anniversaryNumber" min="1" max="50" value="5">
+                </div>
+            </div>
+            
+            <div class="btn-group">
+    <button class="btn btn-primary" id="printBtn">🖨️ Print / Save as PDF</button>
+</div>
+        </div>
+        
+        <!-- Right Panel - Preview -->
+        <div class="preview-panel">
+            <div class="preview-header">
+                <h3>Live Preview</h3>
+                <p>Changes update automatically</p>
+            </div>
+            <div id="greetingCardContainer">
+                <!-- Greeting Card will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to check if local image exists and return appropriate source
+        function getImageSource(imageName) {
+            // Try to load from local folder first
+            const img = new Image();
+            img.src = imageName;
+            
+            // Return the local path - if it fails, the onerror will handle it
+            return imageName;
+        }
+        
+        // Ordinal number converter
+        function getOrdinal(n) {
+            n = parseInt(n);
+            const s = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            return n + (s[(v - 20) % 10] || s[v] || s[0]);
+        }
+        
+        // Generate greeting message based on type
+        function generateGreetingMessage(type, dealerName, showroomName, anniversaryNum) {
+            const name = dealerName || "Valued Partner";
+            
+            switch(type) {
+                case 'birthday':
+                    return `Dear ${name}, Wishing you a very Happy Birthday! May this year bring success, happiness, and growth.`;
+                case 'marriage':
+                    return `Dear ${name}, Wishing you a wonderful Anniversary! May your journey together continue to be filled with happiness.`;
+                case 'showroom':
+                    const ordinal = getOrdinal(anniversaryNum || 1);
+                    const showroom = showroomName || "your showroom";
+                    return `Congratulations ${name} on your ${ordinal} ${showroom} Showroom Anniversary! Your partnership and growth with AIS Windows is truly valued.`;
+                default:
+                    return `Dear ${name}, Wishing you all the best!`;
+            }
+        }
+        
+        // Get greeting title based on type
+        function getGreetingTitle(type, name, anniversaryNum, showroomName) {
+            switch(type) {
+                case 'birthday':
+                    return `Happy Birthday!`;
+                case 'marriage':
+                    return `Happy Anniversary!`;
+                case 'showroom':
+                    const ordinal = getOrdinal(anniversaryNum || 1);
+                    return `Happy ${ordinal} Showroom<br>Anniversary!`;
+                default:
+                    return `Greetings!`;
+            }
+        }
+        
+        // Get decoration text based on type
+        function getDecorationText(type) {
+            switch(type) {
+                case 'birthday': return "HBD";
+                case 'marriage': return "LOVE";
+                case 'showroom': return "AIS";
+                default: return "WISH";
+            }
+        }
+        
+        // Get badge text based on type
+        function getBadgeText(type) {
+            switch(type) {
+                case 'birthday': return { line1: "Happy", line2: "Birthday" };
+                case 'marriage': return { line1: "Happy", line2: "Anniversary" };
+                case 'showroom': return { line1: "Showroom", line2: "Anniversary" };
+                default: return { line1: "Happy", line2: "Day" };
+            }
+        }
+        
+        // Get background class based on type
+        function getBackgroundClass(type) {
+            switch(type) {
+                case 'birthday': return "birthday-bg";
+                case 'marriage': return "marriage-bg";
+                case 'showroom': return "showroom-bg";
+                default: return "birthday-bg";
+            }
+        }
+        
+        // Update preview live
+        function updatePreview() {
+            const greetingType = document.getElementById('greetingType').value;
+            const dealerName = document.getElementById('dealerName').value;
+            const showroomName = document.getElementById('showroomName').value;
+            const anniversaryNumber = document.getElementById('anniversaryNumber').value;
+            
+            // Show/hide conditional fields
+            const showroomFields = document.getElementById('showroomFields');
+            if (greetingType === 'showroom') {
+                showroomFields.classList.add('show');
+            } else {
+                showroomFields.classList.remove('show');
+            }
+            
+            // Generate content
+            const message = generateGreetingMessage(greetingType, dealerName, showroomName, anniversaryNumber);
+            const title = getGreetingTitle(greetingType, dealerName, anniversaryNumber, showroomName);
+            const decoration = getDecorationText(greetingType);
+            const badge = getBadgeText(greetingType);
+            const bgClass = getBackgroundClass(greetingType);
+            
+            // Build the card HTML with local logo and signature - NO crossorigin for local files
+            const cardHTML = `
+                <div class="greeting-card" id="greetingCard">
+                    <div class="card-content">
+                        <div class="card-left ${bgClass}">
+                            <div class="decoration-text">${decoration}</div>
+                        </div>
+                        <div class="card-right">
+                            <div class="card-header">
+                                <img src="logo.png" alt="AIS Logo" class="ais-logo" 
+     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%230054A6\'/%3E%3Ctext x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3EAIS%3C/text%3E%3C/svg%3E'">
+                                <div class="greeting-badge">
+                                    <span>${badge.line1}</span>
+                                    <span>${badge.line2}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="greeting-subtitle">Special Celebration</div>
+                            <div class="greeting-title">Dear ${dealerName || 'Valued Partner'}!<br>Wishing You a<br><span class="highlight">${title}</span></div>
+                            
+                            <div class="greeting-message">
+                                ${message}
+                            </div>
+                            
+                            <div class="signature-area">
+                               <img src="signature.png" alt="Signature" class="signature-img" 
+     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'50\'%3E%3Crect width=\'120\' height=\'50\' fill=\'%23f0f0f0\'/%3E%3Ctext x=\'10\' y=\'30\' fill=\'%23666\'%3ESanju G%3C/text%3E%3C/svg%3E'">
+                                <p class="signature-name">Sanju G</p>
+                                <p class="signature-title">HEAD - CHANNEL MANAGEMENT<br>ACTIVATION & ENABLEMENT</p>
+                                <p class="signature-company">AIS Windows</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer-bar">
+                        AIS Windows | A Division of Asahi India Glass Ltd.
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('greetingCardContainer').innerHTML = cardHTML;
+        }
+        
+      // Print function - uses browser's native print dialog
+function printGreeting() {
+    const element = document.getElementById('greetingCard');
+    if (!element) {
+        alert('Please wait for the card to load.');
+        return;
+    }
+    
+    // Create a clone of the card for printing
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>AIS Greeting Card</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    background: white;
+                    padding: 20px;
+                }
+                ${document.querySelector('style').innerHTML}
+                .greeting-card {
+                    box-shadow: none;
+                    margin: 0 auto;
+                    max-width: 100%;
+                }
+                .greeting-card:hover {
+                    transform: none;
+                }
+                @media print {
+                    body {
+                        padding: 0;
+                        margin: 0;
+                    }
+                    .greeting-card {
+                        box-shadow: none;
+                        page-break-inside: avoid;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            ${element.outerHTML}
+            <script>
+                window.onload = () => {
+                    window.print();
+                    setTimeout(() => window.close(), 500);
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
+        
+        // Add event listeners for live preview
+        document.getElementById('greetingType').addEventListener('change', updatePreview);
+        document.getElementById('dealerName').addEventListener('input', updatePreview);
+        document.getElementById('showroomName').addEventListener('input', updatePreview);
+        document.getElementById('anniversaryNumber').addEventListener('input', updatePreview);
+        
+        // Add download button listeners
+       document.getElementById('printBtn').addEventListener('click', printGreeting);
+        
+        // Initial render
+        updatePreview();
+        
+        // Add loading spinner style
+        const style = document.createElement('style');
+        style.textContent = `
+            .loading-spinner {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 2px solid #f3f3f3;
+                border-top: 2px solid #fff;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+                margin-right: 8px;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            .btn:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+                transform: none;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
