@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIS Greeting Generator | Custom Cards</title>
-        <style>
+    <title>AIS Windows | Luxury Greeting Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -12,62 +14,110 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Montserrat', sans-serif;
+            background: #0a0a0a;
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 60px 40px;
+            position: relative;
+        }
+
+        /* Premium Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.02) 0px, rgba(212, 175, 55, 0.02) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
         }
 
         /* Main Container */
         .generator-container {
-            max-width: 1300px;
+            max-width: 1440px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            background: transparent;
+            grid-template-columns: 380px 1fr;
+            gap: 40px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Left Panel - Controls */
+        /* Left Panel - Premium Controls */
         .controls-panel {
-            background: white;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 40px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             height: fit-content;
             position: sticky;
-            top: 40px;
+            top: 60px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        .controls-panel h2 {
-            color: #1a2e45;
-            margin-bottom: 24px;
-            font-size: 24px;
-            border-left: 4px solid #cba456;
-            padding-left: 16px;
+        .controls-header {
+            margin-bottom: 36px;
+            text-align: center;
+        }
+
+        .controls-header .ais-brand {
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: #cba456;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .controls-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+
+        .controls-header h2 span {
+            color: #cba456;
+            font-weight: 700;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         .form-group label {
             display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #2d2d3a;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #cba456;
+            font-size: 12px;
         }
 
         .form-group select,
         .form-group input {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e1e8ed;
-            border-radius: 12px;
+            padding: 14px 18px;
+            border: 1.5px solid #e8e8ed;
+            border-radius: 20px;
             font-size: 14px;
             transition: all 0.3s ease;
-            font-family: inherit;
+            font-family: 'Montserrat', sans-serif;
+            background: #ffffff;
+            font-weight: 500;
         }
 
         .form-group select:focus,
@@ -79,173 +129,219 @@
 
         .conditional-field {
             display: none;
-            animation: fadeIn 0.3s ease;
+            animation: slideDown 0.4s ease;
         }
 
         .conditional-field.show {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Buttons */
+        /* Premium Buttons */
         .btn-group {
             display: flex;
             gap: 16px;
-            margin-top: 32px;
+            margin-top: 40px;
         }
 
         .btn {
             flex: 1;
             padding: 14px 24px;
             border: none;
-            border-radius: 12px;
+            border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 14px;
+            font-size: 13px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d3a 100%);
             color: white;
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            border-color: #cba456;
         }
 
         .btn-secondary {
-            background: #f0f2f5;
-            color: #2c3e50;
-            border: 1px solid #e1e8ed;
+            background: transparent;
+            color: #1a1a2e;
+            border: 1.5px solid #e0e0e6;
         }
 
         .btn-secondary:hover {
-            background: #e4e6e9;
+            background: #f8f8fa;
+            border-color: #cba456;
         }
 
-        /* Right Panel - Preview */
+        /* Right Panel */
         .preview-panel {
-            background: transparent;
-            border-radius: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
         }
 
         .preview-header {
-            background: white;
-            padding: 16px 24px;
-            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 32px;
+            border-radius: 48px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
         .preview-header h3 {
-            color: #1a2e45;
-            font-size: 18px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            color: #1a1a2e;
+            font-weight: 600;
         }
 
         .preview-header p {
-            color: #7f8c8d;
-            font-size: 13px;
-            margin-top: 4px;
+            color: #8e8e9e;
+            font-size: 12px;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
         }
 
-        /* Greeting Card Styles - Sharp edges (no border radius) */
+        /* ========== PREMIUM GREETING CARD ========== */
         .greeting-card {
             background: #ffffff;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
             position: relative;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             border-radius: 0;
         }
 
         .greeting-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 40px 70px -20px rgba(0, 0, 0, 0.4);
         }
 
-        .card-footer-bar {
-            background: #1a2e45;
-            color: #fff;
-            text-align: center;
-            padding: 05px;
-            font-size: 15px;
-            letter-spacing: 1px;
+        /* Premium Gold Border Effect */
+        .greeting-card::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            pointer-events: none;
+            z-index: 10;
         }
 
         .card-content {
             display: flex;
-            min-height: 550px;
+            min-height: 620px;
             position: relative;
         }
 
-        /* Left Side - Decorative with sharp edges */
+        /* Left Side - Artistic with Overlay */
         .card-left {
-            width: 35%;
+            width: 38%;
             position: relative;
             background-size: cover;
             background-position: center;
+            overflow: hidden;
         }
 
-        .card-left.birthday-bg {
-            background-image: url('https://plus.unsplash.com/premium_photo-1677221924410-0d27f4940396?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8YmlydGhkYXl8ZW58MHx8MHx8fDA%3D');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .card-left.marriage-bg {
-            background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80');
-        }
-
-        .card-left.showroom-bg {
-            background-image: url('https://images.unsplash.com/photo-1565031491910-e57fac031c41?w=800&auto=format&fit=crop&q=80');
+        .card-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%);
+            z-index: 1;
         }
 
         .card-left::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+            z-index: 1;
+        }
+
+        .card-left.birthday-bg {
+            background-image: url('https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&auto=format');
+            background-size: cover;
+            background-position: 30% 50%;
+        }
+
+        .card-left.marriage-bg {
+            background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&auto=format');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-left.showroom-bg {
+            background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format');
+            background-size: cover;
+            background-position: center;
         }
 
         .decoration-text {
             position: absolute;
-            bottom: 20px;
+            bottom: 30px;
             left: 20px;
-            font-size: 60px;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.25);
+            font-size: 70px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.2);
             line-height: 1;
             z-index: 2;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 8px;
+            font-family: 'Montserrat', sans-serif;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
         }
 
         /* Right Side - Content */
         .card-right {
-            width: 65%;
-            padding: 32px 36px;
+            width: 62%;
+            padding: 48px 42px;
             display: flex;
             flex-direction: column;
             position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #fefaf5 100%);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 20px;
         }
 
         .ais-logo {
@@ -254,107 +350,179 @@
             object-fit: contain;
         }
 
+        /* Fixed Badge Styling - Properly contained text */
         .greeting-badge {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(ellipse at center, #f2dba6 0%, #cba456 100%);
+            min-width: 90px;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8942e 100%);
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border: 2px solid #fff;
+            color: #1a1a2e;
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
             text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .greeting-badge::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 50%;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+        }
+
+        .greeting-badge span {
+            display: block;
+            text-align: center;
+            line-height: 1.3;
         }
 
         .greeting-badge span:first-child {
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
 
         .greeting-badge span:last-child {
-            font-size: 10px;
+            font-size: 11px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            word-wrap: break-word;
+            max-width: 80px;
         }
 
         .greeting-subtitle {
             color: #cba456;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 11px;
-            margin-bottom: 12px;
+            letter-spacing: 3px;
+            font-size: 10px;
+            margin-bottom: 16px;
             font-weight: 600;
+            position: relative;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .greeting-subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: #cba456;
         }
 
         .greeting-title {
-            color: #2c3e50;
-            font-size: 28px;
-            margin: 0 0 20px 0;
+            font-family: 'Cormorant Garamond', serif;
+            color: #1a1a2e;
+            font-size: 36px;
+            margin: 0 0 24px 0;
             line-height: 1.2;
-            font-weight: 700;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
         .greeting-title .highlight {
             color: #cba456;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+
+        .greeting-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #cba456, transparent);
         }
 
         .greeting-message {
-            color: #555;
-            line-height: 1.7;
+            color: #4a4a5a;
+            line-height: 1.8;
             font-size: 14px;
-            margin-bottom: 28px;
-            border-left: 2px solid #f2dba6;
-            padding-left: 20px;
+            margin-bottom: 32px;
+            border-left: 3px solid #cba456;
+            padding-left: 24px;
             flex: 1;
+            font-weight: 400;
         }
 
+        /* Signature Area */
         .signature-area {
             margin-top: auto;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            padding-top: 24px;
         }
 
         .signature-img {
-            height: 45px;
+            height: 50px;
             width: auto;
+            object-fit: contain;
             margin-bottom: 12px;
         }
 
         .signature-name {
-            font-weight: 800;
-            color: #1a2e45;
+            font-weight: 700;
+            color: #1a1a2e;
             font-size: 16px;
             margin: 0;
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.5px;
         }
 
         .signature-title {
-            font-size: 10px;
-            color: #666;
+            font-size: 9px;
+            color: #8e8e9e;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 2px 0;
+            letter-spacing: 1px;
+            margin: 4px 0;
             font-weight: 600;
         }
 
         .signature-company {
-            font-weight: bold;
+            font-weight: 600;
             font-size: 11px;
-            color: #1a2e45;
-            margin-top: 4px;
+            color: #cba456;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
         }
 
-        /* Loading State */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
+        /* Footer Bar */
+        .card-footer-bar {
+            background: linear-gradient(90deg, #1a1a2e 0%, #2d2d3a 100%);
+            color: #cba456;
+            text-align: center;
+            padding: 12px;
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: 500;
+            text-transform: uppercase;
         }
 
         /* Responsive */
-        @media (max-width: 968px) {
+        @media (max-width: 1100px) {
+            body {
+                padding: 30px 20px;
+            }
+            
             .generator-container {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 30px;
             }
             
             .controls-panel {
@@ -368,63 +536,114 @@
             
             .card-left {
                 width: 100%;
-                height: 150px;
+                height: 220px;
             }
             
             .card-right {
                 width: 100%;
-                padding: 24px;
+                padding: 32px;
             }
             
             .decoration-text {
-                font-size: 40px;
-                bottom: 10px;
-                left: 10px;
+                writing-mode: horizontal-tb;
+                transform: none;
+                font-size: 50px;
+                bottom: 15px;
+                right: 20px;
+                left: auto;
             }
+        }
+
+        @media (max-width: 480px) {
+            .greeting-badge {
+                min-width: 70px;
+                width: 70px;
+                height: 70px;
+            }
+            
+            .greeting-badge span:first-child {
+                font-size: 10px;
+            }
+            
+            .greeting-badge span:last-child {
+                font-size: 8px;
+                max-width: 60px;
+            }
+            
+            .card-right {
+                padding: 24px;
+            }
+            
+            .greeting-title {
+                font-size: 28px;
+            }
+        }
+
+        /* Animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
     <div class="generator-container">
-        <!-- Left Panel - Controls -->
+        <!-- Left Panel - Premium Controls -->
         <div class="controls-panel">
-            <h2>✨ Greeting Generator</h2>
+            <div class="controls-header">
+                <div class="ais-brand">AIS WINDOWS</div>
+                <h2>Luxury <span>Greetings</span></h2>
+            </div>
             
             <div class="form-group">
-                <label>🎉 Greeting Type</label>
+                <label><i class="fas fa-gift"></i> Occasion</label>
                 <select id="greetingType">
-                    <option value="birthday">🎂 Birthday</option>
-                    <option value="marriage">💍 Marriage Anniversary</option>
+                    <option value="birthday">🎂 Birthday Celebration</option>
+                    <option value="marriage">💍 Wedding Anniversary</option>
                     <option value="showroom">🏢 Showroom Anniversary</option>
                 </select>
             </div>
             
             <div class="form-group">
-                <label>👤 Dealer Name</label>
-                <input type="text" id="dealerName" placeholder="Enter dealer name" value="Mr. Arpit">
+                <label><i class="fas fa-user-tie"></i> Recipient Name</label>
+                <input type="text" id="dealerName" placeholder="Enter dealer/partner name" value="Mr. Arpit Sharma">
             </div>
             
             <div id="showroomFields" class="conditional-field">
                 <div class="form-group">
-                    <label>🏬 Showroom Name</label>
-                    <input type="text" id="showroomName" placeholder="Enter showroom name" value="Pune Showroom">
+                    <label><i class="fas fa-store"></i> Showroom Name</label>
+                    <input type="text" id="showroomName" placeholder="Enter showroom name" value="Pune Flagship">
                 </div>
                 <div class="form-group">
-                    <label>🎂 Anniversary Number</label>
+                    <label><i class="fas fa-calendar-alt"></i> Anniversary Year</label>
                     <input type="number" id="anniversaryNumber" min="1" max="50" value="5">
                 </div>
             </div>
             
             <div class="btn-group">
-    <button class="btn btn-primary" id="printBtn">🖨️ Print / Save as PDF</button>
-</div>
+                <button class="btn btn-primary" id="printBtn">
+                    <i class="fas fa-print"></i> Print / PDF
+                </button>
+            </div>
+            
+            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e8e8ed; text-align: center;">
+                <p style="font-size: 10px; color: #aaa; letter-spacing: 0.5px;">
+                    <i class="fas fa-certificate"></i> Premium Edition
+                </p>
+            </div>
         </div>
         
         <!-- Right Panel - Preview -->
         <div class="preview-panel">
             <div class="preview-header">
-                <h3>Live Preview</h3>
-                <p>Changes update automatically</p>
+                <h3><i class="fas fa-eye" style="color: #cba456; margin-right: 10px;"></i> Live Preview</h3>
+                <p>Luxury greeting card • Real-time updates</p>
             </div>
             <div id="greetingCardContainer">
                 <!-- Greeting Card will be rendered here -->
@@ -433,17 +652,22 @@
     </div>
 
     <script>
-        // Function to check if local image exists and return appropriate source
-        function getImageSource(imageName) {
-            // Try to load from local folder first
+        // Function to load local images with fallback
+        function loadLocalImage(imagePath, elementId, fallbackSvg) {
             const img = new Image();
-            img.src = imageName;
-            
-            // Return the local path - if it fails, the onerror will handle it
-            return imageName;
+            img.onload = function() {
+                const imgElement = document.getElementById(elementId);
+                if (imgElement) imgElement.src = imagePath;
+            };
+            img.onerror = function() {
+                const imgElement = document.getElementById(elementId);
+                if (imgElement && fallbackSvg) imgElement.src = fallbackSvg;
+            };
+            img.src = imagePath;
+            return imagePath;
         }
         
-        // Ordinal number converter
+        // Ordinal number converter with roman option
         function getOrdinal(n) {
             n = parseInt(n);
             const s = ["th", "st", "nd", "rd"];
@@ -451,34 +675,54 @@
             return n + (s[(v - 20) % 10] || s[v] || s[0]);
         }
         
-        // Generate greeting message based on type
+        // Get Roman Numeral for premium touch
+        function getRomanNumeral(num) {
+            const romanMap = [
+                { value: 50, numeral: 'L' }, { value: 40, numeral: 'XL' }, { value: 10, numeral: 'X' },
+                { value: 9, numeral: 'IX' }, { value: 5, numeral: 'V' }, { value: 4, numeral: 'IV' },
+                { value: 1, numeral: 'I' }
+            ];
+            let result = '';
+            let n = parseInt(num);
+            for (let i = 0; i < romanMap.length; i++) {
+                while (n >= romanMap[i].value) {
+                    result += romanMap[i].numeral;
+                    n -= romanMap[i].value;
+                }
+            }
+            return result;
+        }
+        
+        // Generate premium greeting message
         function generateGreetingMessage(type, dealerName, showroomName, anniversaryNum) {
             const name = dealerName || "Valued Partner";
             
             switch(type) {
                 case 'birthday':
-                    return `Dear ${name}, Wishing you a very Happy Birthday! May this year bring success, happiness, and growth.`;
+                    return `On your special day, we celebrate not just the occasion, but the remarkable partnership we share. May the year ahead bring you unparalleled success, joy, and prosperity. It is an honor to have you as a valued member of the AIS Windows family.`;
                 case 'marriage':
-                    return `Dear ${name}, Wishing you a wonderful Anniversary! May your journey together continue to be filled with happiness.`;
+                    return `As you celebrate another year of togetherness, we extend our warmest congratulations. Your partnership with AIS Windows reflects the same strength and harmony that defines your beautiful journey. Wishing you endless joy and cherished moments.`;
                 case 'showroom':
                     const ordinal = getOrdinal(anniversaryNum || 1);
-                    const showroom = showroomName || "your showroom";
-                    return `Congratulations ${name} on your ${ordinal} ${showroom} Showroom Anniversary! Your partnership and growth with AIS Windows is truly valued.`;
+                    const roman = getRomanNumeral(anniversaryNum || 1);
+                    const showroom = showroomName || "your esteemed showroom";
+                    return `Congratulations on achieving this remarkable milestone — your ${ordinal} (${roman}) Anniversary! Your dedication and partnership have been instrumental in our shared success. Here's to many more years of excellence and growth together with ${showroom}.`;
                 default:
                     return `Dear ${name}, Wishing you all the best!`;
             }
         }
         
-        // Get greeting title based on type
+        // Get greeting title with premium styling
         function getGreetingTitle(type, name, anniversaryNum, showroomName) {
             switch(type) {
                 case 'birthday':
-                    return `Happy Birthday!`;
+                    return `A Celebration of<br>You & Your Journey`;
                 case 'marriage':
-                    return `Happy Anniversary!`;
+                    return `A Celebration of<br>Togetherness`;
                 case 'showroom':
                     const ordinal = getOrdinal(anniversaryNum || 1);
-                    return `Happy ${ordinal} Showroom<br>Anniversary!`;
+                    const roman = getRomanNumeral(anniversaryNum || 1);
+                    return `Celebrating ${ordinal}<br><span class="highlight">(${roman}) Anniversary</span>`;
                 default:
                     return `Greetings!`;
             }
@@ -487,20 +731,24 @@
         // Get decoration text based on type
         function getDecorationText(type) {
             switch(type) {
-                case 'birthday': return "HBD";
-                case 'marriage': return "LOVE";
-                case 'showroom': return "AIS";
+                case 'birthday': return "BIRTHDAY";
+                case 'marriage': return "ANNIVERSARY";
+                case 'showroom': return "MILESTONE";
                 default: return "WISH";
             }
         }
         
-        // Get badge text based on type
+        // Get badge text based on type - Fixed to ensure proper wrapping
         function getBadgeText(type) {
             switch(type) {
-                case 'birthday': return { line1: "Happy", line2: "Birthday" };
-                case 'marriage': return { line1: "Happy", line2: "Anniversary" };
-                case 'showroom': return { line1: "Showroom", line2: "Anniversary" };
-                default: return { line1: "Happy", line2: "Day" };
+                case 'birthday': 
+                    return { line1: "HAPPY", line2: "BIRTHDAY" };
+                case 'marriage': 
+                    return { line1: "HAPPY", line2: "ANNIVERSARY" };
+                case 'showroom': 
+                    return { line1: "SHOWROOM", line2: "ANNIVERSARY" };
+                default: 
+                    return { line1: "HAPPY", line2: "DAY" };
             }
         }
         
@@ -513,6 +761,15 @@
                 default: return "birthday-bg";
             }
         }
+        
+        // Logo and signature paths (local files)
+        const LOGO_PATH = 'logo.png';
+        const SIGNATURE_PATH = 'signature.png';
+        
+        // Fallback SVGs
+        const LOGO_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Ctext x='0' y='45' font-family='Montserrat' font-weight='700' font-size='32' fill='%23cba456'%3EAIS%3C/text%3E%3Ctext x='70' y='38' font-family='Montserrat' font-size='10' fill='%23666'%3EWINDOWS%3C/text%3E%3C/svg%3E";
+        
+        const SIGNATURE_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='50' viewBox='0 0 140 50'%3E%3Cpath d='M10,30 Q25,20 35,28 Q45,36 55,32 Q70,26 80,30 Q95,35 105,28 Q115,21 125,27' stroke='%23cba456' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3Ctext x='15' y='45' font-family='Cormorant Garamond' font-size='14' fill='%23333'%3ESanju G%3C/text%3E%3C/svg%3E";
         
         // Update preview live
         function updatePreview() {
@@ -536,7 +793,7 @@
             const badge = getBadgeText(greetingType);
             const bgClass = getBackgroundClass(greetingType);
             
-            // Build the card HTML with local logo and signature - NO crossorigin for local files
+            // Build premium card HTML with local image loading
             const cardHTML = `
                 <div class="greeting-card" id="greetingCard">
                     <div class="card-content">
@@ -545,32 +802,32 @@
                         </div>
                         <div class="card-right">
                             <div class="card-header">
-                                <img src="logo.png" alt="AIS Logo" class="ais-logo" 
-     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%230054A6\'/%3E%3Ctext x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3EAIS%3C/text%3E%3C/svg%3E'">
+                                <img id="aisLogoImg" src="${LOGO_PATH}" alt="AIS Logo" class="ais-logo" 
+                                    onerror="this.onerror=null; this.src='${LOGO_FALLBACK}'">
                                 <div class="greeting-badge">
                                     <span>${badge.line1}</span>
                                     <span>${badge.line2}</span>
                                 </div>
                             </div>
                             
-                            <div class="greeting-subtitle">Special Celebration</div>
-                            <div class="greeting-title">Dear ${dealerName || 'Valued Partner'}!<br>Wishing You a<br><span class="highlight">${title}</span></div>
+                            <div class="greeting-subtitle">With Warm Regards</div>
+                            <div class="greeting-title">Dear ${dealerName || 'Valued Partner'},<br>${title}</div>
                             
                             <div class="greeting-message">
                                 ${message}
                             </div>
                             
                             <div class="signature-area">
-                               <img src="signature.png" alt="Signature" class="signature-img" 
-     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'50\'%3E%3Crect width=\'120\' height=\'50\' fill=\'%23f0f0f0\'/%3E%3Ctext x=\'10\' y=\'30\' fill=\'%23666\'%3ESanju G%3C/text%3E%3C/svg%3E'">
+                                <img id="signatureImg" src="${SIGNATURE_PATH}" alt="Signature" class="signature-img"
+                                    onerror="this.onerror=null; this.src='${SIGNATURE_FALLBACK}'">
                                 <p class="signature-name">Sanju G</p>
                                 <p class="signature-title">HEAD - CHANNEL MANAGEMENT<br>ACTIVATION & ENABLEMENT</p>
-                                <p class="signature-company">AIS Windows</p>
+                                <p class="signature-company">AIS Windows | A Division of Asahi India Glass Ltd.</p>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer-bar">
-                        AIS Windows | A Division of Asahi India Glass Ltd.
+                        Excellence in Every Detail • Since 1987
                     </div>
                 </div>
             `;
@@ -578,109 +835,89 @@
             document.getElementById('greetingCardContainer').innerHTML = cardHTML;
         }
         
-      // Print function - uses browser's native print dialog
-function printGreeting() {
-    const element = document.getElementById('greetingCard');
-    if (!element) {
-        alert('Please wait for the card to load.');
-        return;
-    }
-    
-    // Create a clone of the card for printing
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>AIS Greeting Card</title>
-            <style>
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    min-height: 100vh;
-                    background: white;
-                    padding: 20px;
-                }
-                ${document.querySelector('style').innerHTML}
-                .greeting-card {
-                    box-shadow: none;
-                    margin: 0 auto;
-                    max-width: 100%;
-                }
-                .greeting-card:hover {
-                    transform: none;
-                }
-                @media print {
-                    body {
-                        padding: 0;
-                        margin: 0;
-                    }
-                    .greeting-card {
-                        box-shadow: none;
-                        page-break-inside: avoid;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            ${element.outerHTML}
-            <script>
-                window.onload = () => {
-                    window.print();
-                    setTimeout(() => window.close(), 500);
-                };
-            <\/script>
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
-}
+        // Print function with premium styling
+        function printGreeting() {
+            const element = document.getElementById('greetingCard');
+            if (!element) {
+                alert('Please wait for the card to load.');
+                return;
+            }
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>AIS Windows | Luxury Greeting Card</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        body {
+                            font-family: 'Montserrat', sans-serif;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            background: white;
+                            padding: 40px;
+                        }
+                        ${document.querySelector('style').innerHTML}
+                        .greeting-card {
+                            box-shadow: none;
+                            margin: 0 auto;
+                            max-width: 800px;
+                        }
+                        .greeting-card::before {
+                            top: 15px;
+                            left: 15px;
+                            right: 15px;
+                            bottom: 15px;
+                        }
+                        .greeting-card:hover {
+                            transform: none;
+                        }
+                        @media print {
+                            body {
+                                padding: 0;
+                                margin: 0;
+                            }
+                            .greeting-card {
+                                box-shadow: none;
+                                page-break-inside: avoid;
+                            }
+                            .greeting-card::before {
+                                display: none;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${element.outerHTML}
+                    <script>
+                        window.onload = () => {
+                            window.print();
+                            setTimeout(() => window.close(), 500);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
         
-        // Add event listeners for live preview
+        // Event listeners for live preview
         document.getElementById('greetingType').addEventListener('change', updatePreview);
         document.getElementById('dealerName').addEventListener('input', updatePreview);
         document.getElementById('showroomName').addEventListener('input', updatePreview);
         document.getElementById('anniversaryNumber').addEventListener('input', updatePreview);
-        
-        // Add download button listeners
-       document.getElementById('printBtn').addEventListener('click', printGreeting);
+        document.getElementById('printBtn').addEventListener('click', printGreeting);
         
         // Initial render
         updatePreview();
-        
-        // Add loading spinner style
-        const style = document.createElement('style');
-        style.textContent = `
-            .loading-spinner {
-                display: inline-block;
-                width: 16px;
-                height: 16px;
-                border: 2px solid #f3f3f3;
-                border-top: 2px solid #fff;
-                border-radius: 50%;
-                animation: spin 0.8s linear infinite;
-                margin-right: 8px;
-            }
-            
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            
-            .btn:disabled {
-                opacity: 0.7;
-                cursor: not-allowed;
-                transform: none;
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
