@@ -667,30 +667,12 @@
             return imagePath;
         }
         
-        // Ordinal number converter with roman option
+        // Ordinal number converter
         function getOrdinal(n) {
             n = parseInt(n);
             const s = ["th", "st", "nd", "rd"];
             const v = n % 100;
             return n + (s[(v - 20) % 10] || s[v] || s[0]);
-        }
-        
-        // Get Roman Numeral for premium touch
-        function getRomanNumeral(num) {
-            const romanMap = [
-                { value: 50, numeral: 'L' }, { value: 40, numeral: 'XL' }, { value: 10, numeral: 'X' },
-                { value: 9, numeral: 'IX' }, { value: 5, numeral: 'V' }, { value: 4, numeral: 'IV' },
-                { value: 1, numeral: 'I' }
-            ];
-            let result = '';
-            let n = parseInt(num);
-            for (let i = 0; i < romanMap.length; i++) {
-                while (n >= romanMap[i].value) {
-                    result += romanMap[i].numeral;
-                    n -= romanMap[i].value;
-                }
-            }
-            return result;
         }
         
         // Generate premium greeting message
@@ -704,9 +686,8 @@
                     return `As you celebrate another year of togetherness, we extend our warmest congratulations. Your partnership with AIS Windows reflects the same strength and harmony that defines your beautiful journey. Wishing you endless joy and cherished moments.`;
                 case 'showroom':
                     const ordinal = getOrdinal(anniversaryNum || 1);
-                    const roman = getRomanNumeral(anniversaryNum || 1);
                     const showroom = showroomName || "your esteemed showroom";
-                    return `Congratulations on achieving this remarkable milestone — your ${ordinal} (${roman}) Anniversary! Your dedication and partnership have been instrumental in our shared success. Here's to many more years of excellence and growth together with ${showroom}.`;
+                    return `Congratulations on achieving this remarkable milestone — your ${ordinal} Anniversary! Your dedication and partnership have been instrumental in our shared success. Here's to many more years of excellence and growth together with ${showroom}.`;
                 default:
                     return `Dear ${name}, Wishing you all the best!`;
             }
@@ -721,8 +702,7 @@
                     return `A Celebration of<br>Togetherness`;
                 case 'showroom':
                     const ordinal = getOrdinal(anniversaryNum || 1);
-                    const roman = getRomanNumeral(anniversaryNum || 1);
-                    return `Celebrating ${ordinal}<br><span class="highlight">(${roman}) Anniversary</span>`;
+                    return `Celebrating ${ordinal}<br><span class="highlight">Anniversary</span>`;
                 default:
                     return `Greetings!`;
             }
