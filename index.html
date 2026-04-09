@@ -21,7 +21,7 @@
             position: relative;
         }
 
-        /* Premium Background Pattern */
+        /* Premium Animated Background */
         body::before {
             content: '';
             position: fixed;
@@ -29,11 +29,33 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
-                repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.02) 0px, rgba(212, 175, 55, 0.02) 2px, transparent 2px, transparent 8px);
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 70%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.02) 0px, rgba(212, 175, 55, 0.02) 1px, transparent 1px, transparent 12px);
             pointer-events: none;
+            animation: slowDrift 30s ease infinite alternate;
+        }
+
+        @keyframes slowDrift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Floating Gold Particles */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(2px 2px at 20px 30px, rgba(212, 175, 55, 0.15), transparent),
+                              radial-gradient(1px 1px at 80px 120px, rgba(212, 175, 55, 0.2), transparent);
+            background-size: 200px 200px, 150px 150px;
+            background-repeat: repeat;
+            pointer-events: none;
+            opacity: 0.5;
         }
 
         /* Main Container */
@@ -47,44 +69,96 @@
             z-index: 1;
         }
 
-        /* Left Panel - Premium Controls */
+        /* Left Panel - Premium Controls with Glassmorphism */
         .controls-panel {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
             padding: 40px 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
             height: fit-content;
             position: sticky;
             top: 60px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+        }
+
+        .controls-panel:hover {
+            box-shadow: 0 35px 70px -20px rgba(0, 0, 0, 0.5);
+            border-color: rgba(212, 175, 55, 0.5);
         }
 
         .controls-header {
             margin-bottom: 36px;
             text-align: center;
+            position: relative;
+        }
+
+        .controls-header::after {
+            content: '✦';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #cba456;
+            font-size: 14px;
+            letter-spacing: 8px;
+            width: 100%;
         }
 
         .controls-header .ais-brand {
-            font-size: 12px;
-            letter-spacing: 3px;
+            font-size: 11px;
+            letter-spacing: 4px;
             color: #cba456;
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 12px;
+            position: relative;
+            display: inline-block;
+            padding: 0 20px;
+        }
+
+        .controls-header .ais-brand::before,
+        .controls-header .ais-brand::after {
+            content: '—';
+            position: absolute;
+            top: 50%;
+            color: #cba456;
+            font-size: 12px;
+        }
+
+        .controls-header .ais-brand::before {
+            left: -5px;
+        }
+
+        .controls-header .ais-brand::after {
+            right: -5px;
         }
 
         .controls-header h2 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 600;
             color: #1a1a2e;
             letter-spacing: -0.5px;
+            margin-top: 8px;
         }
 
         .controls-header h2 span {
             color: #cba456;
             font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+
+        .controls-header h2 span::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #cba456, transparent);
         }
 
         .form-group {
@@ -93,11 +167,11 @@
 
         .form-group label {
             display: block;
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 10px;
             color: #2d2d3a;
-            font-size: 13px;
-            letter-spacing: 0.5px;
+            font-size: 12px;
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
@@ -112,7 +186,7 @@
             width: 100%;
             padding: 14px 18px;
             border: 1.5px solid #e8e8ed;
-            border-radius: 20px;
+            border-radius: 24px;
             font-size: 14px;
             transition: all 0.3s ease;
             font-family: 'Montserrat', sans-serif;
@@ -124,12 +198,12 @@
         .form-group input:focus {
             outline: none;
             border-color: #cba456;
-            box-shadow: 0 0 0 3px rgba(203, 164, 86, 0.1);
+            box-shadow: 0 0 0 4px rgba(203, 164, 86, 0.15);
         }
 
         .conditional-field {
             display: none;
-            animation: slideDown 0.4s ease;
+            animation: slideDown 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
 
         .conditional-field.show {
@@ -139,7 +213,7 @@
         @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-15px);
             }
             to {
                 opacity: 1;
@@ -158,28 +232,45 @@
             flex: 1;
             padding: 14px 24px;
             border: none;
-            border-radius: 40px;
-            font-weight: 600;
+            border-radius: 50px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             font-size: 13px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             font-family: 'Montserrat', sans-serif;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #1a1a2e 0%, #2d2d3a 100%);
             color: white;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
             border-color: #cba456;
         }
 
@@ -192,6 +283,7 @@
         .btn-secondary:hover {
             background: #f8f8fa;
             border-color: #cba456;
+            transform: translateY(-2px);
         }
 
         /* Right Panel */
@@ -203,12 +295,18 @@
 
         .preview-header {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             padding: 20px 32px;
-            border-radius: 48px;
+            border-radius: 60px;
             text-align: center;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .preview-header:hover {
+            border-color: rgba(212, 175, 55, 0.7);
+            transform: translateY(-2px);
         }
 
         .preview-header h3 {
@@ -225,22 +323,22 @@
             letter-spacing: 0.5px;
         }
 
-        /* ========== PREMIUM GREETING CARD ========== */
+        /* ========== ULTRA PREMIUM GREETING CARD ========== */
         .greeting-card {
             background: #ffffff;
             overflow: hidden;
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 40px 70px -20px rgba(0, 0, 0, 0.35);
             position: relative;
-            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            border-radius: 0;
+            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border-radius: 24px;
         }
 
         .greeting-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 40px 70px -20px rgba(0, 0, 0, 0.4);
+            transform: translateY(-10px);
+            box-shadow: 0 50px 80px -25px rgba(0, 0, 0, 0.45);
         }
 
-        /* Premium Gold Border Effect */
+        /* Premium Gold Border Effect with Animation */
         .greeting-card::before {
             content: '';
             position: absolute;
@@ -248,9 +346,33 @@
             left: 20px;
             right: 20px;
             bottom: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.4);
             pointer-events: none;
             z-index: 10;
+            border-radius: 12px;
+            transition: all 0.4s ease;
+        }
+
+        .greeting-card:hover::before {
+            border-color: rgba(212, 175, 55, 0.7);
+            top: 18px;
+            left: 18px;
+            right: 18px;
+            bottom: 18px;
+        }
+
+        /* Corner Decorations */
+        .greeting-card::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 30px;
+            height: 30px;
+            border-top: 2px solid #cba456;
+            border-left: 2px solid #cba456;
+            z-index: 10;
+            pointer-events: none;
         }
 
         .card-content {
@@ -259,7 +381,7 @@
             position: relative;
         }
 
-        /* Left Side - Artistic with Overlay */
+        /* Left Side - Artistic with Premium Overlay */
         .card-left {
             width: 38%;
             position: relative;
@@ -275,7 +397,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%);
+            background: linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 100%);
             z-index: 1;
         }
 
@@ -285,8 +407,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 100px;
-            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+            height: 120px;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
             z-index: 1;
         }
 
@@ -314,18 +436,18 @@
             left: 20px;
             font-size: 70px;
             font-weight: 800;
-            color: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.12);
             line-height: 1;
             z-index: 2;
             text-transform: uppercase;
-            letter-spacing: 8px;
+            letter-spacing: 12px;
             font-family: 'Montserrat', sans-serif;
             writing-mode: vertical-rl;
             text-orientation: mixed;
             transform: rotate(180deg);
         }
 
-        /* Right Side - Content */
+        /* Right Side - Content with Premium Gradient */
         .card-right {
             width: 62%;
             padding: 48px 42px;
@@ -340,7 +462,7 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 32px;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.25);
             padding-bottom: 20px;
         }
 
@@ -350,33 +472,50 @@
             object-fit: contain;
         }
 
-        /* Fixed Badge Styling - Properly contained text */
+        /* Premium Badge with Shine Effect */
         .greeting-badge {
-            min-width: 90px;
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #d4af37 0%, #b8942e 100%);
+            min-width: 100px;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a03d 25%, #b8942e 50%, #c9a03d 75%, #d4af37 100%);
+            background-size: 200% 200%;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #1a1a2e;
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.4);
             text-align: center;
             position: relative;
             flex-shrink: 0;
+            animation: badgeShine 3s ease infinite;
+        }
+
+        @keyframes badgeShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .greeting-badge::before {
             content: '';
             position: absolute;
-            top: -3px;
-            left: -3px;
-            right: -3px;
-            bottom: -3px;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
             border-radius: 50%;
             border: 1px solid rgba(212, 175, 55, 0.5);
+        }
+
+        .greeting-badge::after {
+            content: '✨';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 14px;
+            color: #d4af37;
         }
 
         .greeting-badge span {
@@ -386,7 +525,7 @@
         }
 
         .greeting-badge span:first-child {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -394,21 +533,21 @@
         }
 
         .greeting-badge span:last-child {
-            font-size: 9px;
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-weight: 600;
+            font-weight: 700;
             word-wrap: break-word;
-            max-width: 80px;
+            max-width: 85px;
         }
 
         .greeting-subtitle {
             color: #cba456;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             font-size: 10px;
             margin-bottom: 16px;
-            font-weight: 600;
+            font-weight: 700;
             position: relative;
             display: inline-block;
             width: fit-content;
@@ -419,18 +558,18 @@
             position: absolute;
             bottom: -6px;
             left: 0;
-            width: 40px;
+            width: 50px;
             height: 2px;
-            background: #cba456;
+            background: linear-gradient(90deg, #cba456, transparent);
         }
 
         .greeting-title {
             font-family: 'Cormorant Garamond', serif;
             color: #1a1a2e;
-            font-size: 36px;
+            font-size: 38px;
             margin: 0 0 24px 0;
             line-height: 1.2;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: -0.5px;
         }
 
@@ -444,7 +583,7 @@
         .greeting-title .highlight::after {
             content: '';
             position: absolute;
-            bottom: 4px;
+            bottom: 6px;
             left: 0;
             right: 0;
             height: 2px;
@@ -453,64 +592,66 @@
 
         .greeting-message {
             color: #4a4a5a;
-            line-height: 1.8;
+            line-height: 1.85;
             font-size: 14px;
             margin-bottom: 32px;
             border-left: 3px solid #cba456;
             padding-left: 24px;
             flex: 1;
             font-weight: 400;
+            font-style: italic;
         }
 
         /* Signature Area */
         .signature-area {
             margin-top: auto;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            border-top: 1px solid rgba(212, 175, 55, 0.25);
             padding-top: 24px;
         }
 
         .signature-img {
-            height: 50px;
+            height: 55px;
             width: auto;
             object-fit: contain;
             margin-bottom: 12px;
+            opacity: 0.9;
         }
 
         .signature-name {
             font-weight: 700;
             color: #1a1a2e;
-            font-size: 16px;
+            font-size: 18px;
             margin: 0;
             font-family: 'Cormorant Garamond', serif;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .signature-title {
             font-size: 9px;
             color: #8e8e9e;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 4px 0;
+            letter-spacing: 1.5px;
+            margin: 5px 0;
             font-weight: 600;
         }
 
-        .signature-company {
-            font-weight: 600;
-            font-size: 11px;
-            color: #cba456;
-            margin-top: 6px;
-            letter-spacing: 0.5px;
-        }
+.signature-company {
+    font-weight: 600;
+    font-size: 10px;
+    color: #1a5fb4;  /* Changed from #cba456 (gold) to blue */
+    margin-top: 6px;
+    letter-spacing: 1px;
+}
 
         /* Footer Bar */
         .card-footer-bar {
-            background: linear-gradient(90deg, #1a1a2e 0%, #2d2d3a 100%);
+            background: linear-gradient(90deg, #1a1a2e 0%, #252536 50%, #1a1a2e 100%);
             color: #cba456;
             text-align: center;
-            padding: 12px;
-            font-size: 11px;
-            letter-spacing: 2px;
-            font-weight: 500;
+            padding: 14px;
+            font-size: 10px;
+            letter-spacing: 3px;
+            font-weight: 600;
             text-transform: uppercase;
         }
 
@@ -556,9 +697,9 @@
 
         @media (max-width: 480px) {
             .greeting-badge {
-                min-width: 70px;
-                width: 70px;
-                height: 70px;
+                min-width: 80px;
+                width: 80px;
+                height: 80px;
             }
             
             .greeting-badge span:first-child {
@@ -567,7 +708,7 @@
             
             .greeting-badge span:last-child {
                 font-size: 8px;
-                max-width: 60px;
+                max-width: 65px;
             }
             
             .card-right {
@@ -577,18 +718,6 @@
             .greeting-title {
                 font-size: 28px;
             }
-        }
-
-        /* Animation */
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        /* Loading State */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
         }
     </style>
 </head>
@@ -632,9 +761,9 @@
                 </button>
             </div>
             
-            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e8e8ed; text-align: center;">
-                <p style="font-size: 10px; color: #aaa; letter-spacing: 0.5px;">
-                    <i class="fas fa-certificate"></i> Premium Edition
+            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
+                <p style="font-size: 10px; color: #cba456; letter-spacing: 1px;">
+                    <i class="fas fa-certificate"></i> Premium Edition • Est. 1987
                 </p>
             </div>
         </div>
@@ -652,21 +781,6 @@
     </div>
 
     <script>
-        // Function to load local images with fallback
-        function loadLocalImage(imagePath, elementId, fallbackSvg) {
-            const img = new Image();
-            img.onload = function() {
-                const imgElement = document.getElementById(elementId);
-                if (imgElement) imgElement.src = imagePath;
-            };
-            img.onerror = function() {
-                const imgElement = document.getElementById(elementId);
-                if (imgElement && fallbackSvg) imgElement.src = fallbackSvg;
-            };
-            img.src = imagePath;
-            return imagePath;
-        }
-        
         // Ordinal number converter
         function getOrdinal(n) {
             n = parseInt(n);
@@ -718,7 +832,7 @@
             }
         }
         
-        // Get badge text based on type - Fixed to ensure proper wrapping
+        // Get badge text based on type
         function getBadgeText(type) {
             switch(type) {
                 case 'birthday': 
@@ -851,11 +965,9 @@
                             margin: 0 auto;
                             max-width: 800px;
                         }
-                        .greeting-card::before {
-                            top: 15px;
-                            left: 15px;
-                            right: 15px;
-                            bottom: 15px;
+                        .greeting-card::before,
+                        .greeting-card::after {
+                            display: none;
                         }
                         .greeting-card:hover {
                             transform: none;
@@ -868,9 +980,6 @@
                             .greeting-card {
                                 box-shadow: none;
                                 page-break-inside: avoid;
-                            }
-                            .greeting-card::before {
-                                display: none;
                             }
                         }
                     </style>
