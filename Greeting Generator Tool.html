@@ -1,686 +1,1301 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>AIS Greeting Generator | Custom Cards</title>
-        <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIS Windows | Premium Greeting Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
+/* ══════════════════════════════════════════════
+   CSS VARIABLES & RESET
+══════════════════════════════════════════════ */
+:root {
+  --gold:         #c9a03d;
+  --gold-light:   #d9b84a;
+  --gold-pale:    #f3e4b5;
+  --gold-deep:    #a07c1e;
+  --navy:         #1a1a2e;
+  --navy-mid:     #252542;
+  --white:        #ffffff;
+  --cream:        #fdfbf6;
+  --grey-50:      #f9f9fb;
+  --grey-100:     #f2f2f5;
+  --grey-200:     #e4e4ea;
+  --grey-400:     #aaaabc;
+  --grey-600:     #6b6b82;
+  --grey-800:     #3a3a4e;
+  --blue-link:    #1a5fb4;
+  --success:      #2d8c50;
+  --error-color:  #c0392b;
+  --shadow-card:  0 40px 80px -20px rgba(0,0,0,0.40);
+  --shadow-panel: 0 20px 50px -15px rgba(0,0,0,0.22);
+  --r-xl:         32px;
+  --r-lg:         20px;
+  --r-md:         14px;
+  --r-pill:       100px;
+  --ease:         cubic-bezier(0.4, 0, 0.2, 1);
+  --t:            0.28s;
+}
 
-        /* Main Container */
-        .generator-container {
-            max-width: 1300px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            background: transparent;
-        }
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: #07070f;
+  min-height: 100vh;
+  color: var(--grey-800);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 
-        /* Left Panel - Controls */
-        .controls-panel {
-            background: white;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            height: fit-content;
-            position: sticky;
-            top: 40px;
-        }
+/* BACKGROUND */
+.page-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 12% 22%, rgba(201,160,61,0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 40% at 88% 78%, rgba(201,160,61,0.05) 0%, transparent 60%),
+    repeating-linear-gradient(60deg, rgba(201,160,61,0.018) 0px, rgba(201,160,61,0.018) 1px, transparent 1px, transparent 40px);
+}
 
-        .controls-panel h2 {
-            color: #1a2e45;
-            margin-bottom: 24px;
-            font-size: 24px;
-            border-left: 4px solid #cba456;
-            padding-left: 16px;
-        }
+/* LAYOUT */
+.app-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 48px 36px;
+  display: grid;
+  grid-template-columns: 348px 1fr;
+  gap: 32px;
+  align-items: start;
+}
 
-        .form-group {
-            margin-bottom: 24px;
-        }
+/* CONTROLS PANEL */
+.ctrl-panel {
+  background: rgba(255,255,255,0.99);
+  border-radius: var(--r-xl);
+  padding: 34px 26px 28px;
+  box-shadow: var(--shadow-panel);
+  border: 1px solid rgba(201,160,61,0.18);
+  position: sticky;
+  top: 48px;
+  transition: border-color var(--t) var(--ease);
+}
+.ctrl-panel:hover { border-color: rgba(201,160,61,0.35); }
 
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-size: 14px;
-        }
+.ctrl-header { text-align: center; margin-bottom: 26px; }
 
-        .form-group select,
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e1e8ed;
-            border-radius: 12px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
+.ctrl-brand {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.ctrl-brand::before,
+.ctrl-brand::after {
+  content: '';
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
 
-        .form-group select:focus,
-        .form-group input:focus {
-            outline: none;
-            border-color: #cba456;
-            box-shadow: 0 0 0 3px rgba(203, 164, 86, 0.1);
-        }
+.ctrl-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 25px;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.25;
+  margin-top: 10px;
+  letter-spacing: -0.2px;
+}
+.ctrl-title em { color: var(--gold-deep); font-style: normal; }
 
-        .conditional-field {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
+.ctrl-divider { display: flex; align-items: center; gap: 10px; margin: 20px 0 24px; }
+.ctrl-divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,160,61,0.3), transparent); }
+.ctrl-divider-gem { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; opacity: 0.7; }
 
-        .conditional-field.show {
-            display: block;
-        }
+/* FORM ELEMENTS */
+.form-block { margin-bottom: 20px; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.form-lbl {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--grey-600);
+  margin-bottom: 8px;
+}
+.form-lbl i { color: var(--gold); font-size: 10px; width: 12px; text-align: center; }
 
-        /* Buttons */
-        .btn-group {
-            display: flex;
-            gap: 16px;
-            margin-top: 32px;
-        }
+.form-ctrl {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1.5px solid var(--grey-200);
+  border-radius: var(--r-pill);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--navy);
+  background: var(--white);
+  transition: border-color var(--t) var(--ease), box-shadow var(--t) var(--ease);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-ctrl:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,160,61,0.11); }
+.form-ctrl.is-error { border-color: var(--error-color); box-shadow: 0 0 0 3px rgba(192,57,43,0.09); }
 
-        .btn {
-            flex: 1;
-            padding: 14px 24px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--gold);
+  pointer-events: none;
+}
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
+.field-error { font-size: 10.5px; color: var(--error-color); font-weight: 600; margin-top: 5px; padding-left: 4px; display: none; }
+.field-error.show { display: block; }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
+.cond-block { display: none; overflow: hidden; }
+.cond-block.show { display: block; animation: expandIn 0.32s var(--ease); }
 
-        .btn-secondary {
-            background: #f0f2f5;
-            color: #2c3e50;
-            border: 1px solid #e1e8ed;
-        }
+@keyframes expandIn {
+  from { opacity:0; transform:translateY(-10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 
-        .btn-secondary:hover {
-            background: #e4e6e9;
-        }
+/* TEMPLATE SELECTOR */
+.tmpl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
-        /* Right Panel - Preview */
-        .preview-panel {
-            background: transparent;
-            border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+.tmpl-opt {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 5/7;
+  border: 2px solid transparent;
+  transition: all var(--t) var(--ease);
+  background: var(--grey-100);
+}
+.tmpl-opt:hover:not(.is-selected) { border-color: rgba(201,160,61,0.38); transform: translateY(-2px); }
+.tmpl-opt.is-selected { border-color: var(--gold); box-shadow: 0 4px 16px rgba(201,160,61,0.28); }
 
-        .preview-header {
-            background: white;
-            padding: 16px 24px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+.tmpl-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tmpl-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.72)); }
+.tmpl-label { position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; font-size: 8.5px; font-weight: 700; color: white; letter-spacing: 0.6px; text-transform: uppercase; }
+.tmpl-check { display: none; position: absolute; top: 5px; right: 5px; width: 17px; height: 17px; background: var(--gold); border-radius: 50%; align-items: center; justify-content: center; }
+.tmpl-opt.is-selected .tmpl-check { display: flex; }
 
-        .preview-header h3 {
-            color: #1a2e45;
-            font-size: 18px;
-        }
+/* ACTION BUTTONS */
+.action-stack { display: flex; flex-direction: column; gap: 9px; margin-top: 24px; padding-top: 22px; border-top: 1px solid rgba(201,160,61,0.12); }
 
-        .preview-header p {
-            color: #7f8c8d;
-            font-size: 13px;
-            margin-top: 4px;
-        }
+.btn {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--r-pill);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  transition: all var(--t) var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.btn:disabled { opacity: 0.42; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn:active:not(:disabled) { transform: scale(0.98) !important; }
 
-        /* Greeting Card Styles - Sharp edges (no border radius) */
-        .greeting-card {
-            background: #ffffff;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            position: relative;
-            transition: transform 0.3s ease;
-            border-radius: 0;
-        }
+.btn-gen { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); color: white; border: 1px solid rgba(201,160,61,0.3); }
+.btn-gen:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.28); border-color: var(--gold); }
 
-        .greeting-card:hover {
-            transform: translateY(-5px);
-        }
+.btn-pdf { background: white; color: var(--navy); border: 1.5px solid var(--grey-200); }
+.btn-pdf:hover:not(:disabled) { border-color: var(--gold); background: rgba(201,160,61,0.04); transform: translateY(-1px); }
 
-        .card-footer-bar {
-            background: #1a2e45;
-            color: #fff;
-            text-align: center;
-            padding: 12px;
-            font-size: 16px;
-            letter-spacing: 1px;
-        }
+.btn-img { background: white; color: var(--navy); border: 1.5px solid var(--grey-200); }
+.btn-img:hover:not(:disabled) { border-color: var(--gold); background: rgba(201,160,61,0.04); transform: translateY(-1px); }
 
-        .card-content {
-            display: flex;
-            min-height: 550px;
-            position: relative;
-        }
+.btn-rst { background: transparent; color: var(--grey-400); border: 1px solid transparent; font-size: 10.5px; padding: 8px; letter-spacing: 0.8px; }
+.btn-rst:hover:not(:disabled) { color: var(--error-color); background: rgba(192,57,43,0.04); }
 
-        /* Left Side - Decorative with sharp edges */
-        .card-left {
-            width: 35%;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-        }
+.ctrl-foot { margin-top: 22px; text-align: center; font-size: 9px; color: rgba(201,160,61,0.6); letter-spacing: 1px; font-weight: 600; }
 
-        .card-left.birthday-bg {
-            background-image: url('https://plus.unsplash.com/premium_photo-1677221924410-0d27f4940396?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8YmlydGhkYXl8ZW58MHx8MHx8fDA%3D');
-            background-size: cover;
-            background-position: center;
-        }
+/* PREVIEW AREA */
+.preview-area { display: flex; flex-direction: column; gap: 18px; }
 
-        .card-left.marriage-bg {
-            background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80');
-        }
+.preview-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(201,160,61,0.18);
+  border-radius: var(--r-pill);
+  padding: 13px 22px;
+}
+.preview-topbar-l { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: rgba(255,255,255,0.85); display: flex; align-items: center; gap: 10px; }
+.preview-topbar-l i { color: var(--gold); font-size: 13px; }
+.preview-topbar-r { font-size: 10px; color: rgba(255,255,255,0.28); letter-spacing: 0.6px; }
 
-        .card-left.showroom-bg {
-            background-image: url('https://images.unsplash.com/photo-1565031491910-e57fac031c41?w=800&auto=format&fit=crop&q=80');
-        }
+.card-stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 44px 40px;
+  background: rgba(255,255,255,0.025);
+  border-radius: var(--r-xl);
+  border: 1px solid rgba(255,255,255,0.05);
+  min-height: 480px;
+  position: relative;
+}
 
-        .card-left::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
-        }
+.stage-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: rgba(255,255,255,0.18); text-align: center; padding: 60px 40px; }
+.stage-empty i { font-size: 44px; color: rgba(201,160,61,0.18); display: block; margin-bottom: 4px; }
+.stage-empty p { font-size: 13px; line-height: 1.7; max-width: 260px; }
+.stage-empty strong { color: rgba(201,160,61,0.55); }
 
-        .decoration-text {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            font-size: 60px;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.25);
-            line-height: 1;
-            z-index: 2;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-        }
+/* ══════════════════════════════════════════════
+   GREETING CARD — PORTRAIT 5×7
+   Screen: 490 × 686px  |  Export: ×3 = 1470 × 2058px
+   
+   FIX: card uses fixed height, no flex overflow.
+   Layout: image zone (238px fixed) + body (flex, no-overflow)
+   Body: header + rule + occ + dear + title + accent + msg (max-height) + sig (no-shrink)
+══════════════════════════════════════════════ */
+#greetingCard {
+  width: 490px;
+  height: 686px;          /* FIX: strict fixed height — no min-height */
+  background: var(--cream);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex-shrink: 0;
+  animation: cardReveal 0.48s cubic-bezier(0.2, 0.9, 0.4, 1) both;
+}
 
-        /* Right Side - Content */
-        .card-right {
-            width: 65%;
-            padding: 32px 36px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+@keyframes cardReveal {
+  from { opacity:0; transform:translateY(22px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 24px;
-        }
+/* ── Image Zone — fixed 238px ── */
+.ci-zone {
+  position: relative;
+  width: 100%;
+  height: 238px;           /* strict fixed — never grows */
+  flex-shrink: 0;
+  overflow: hidden;
+}
 
-        .ais-logo {
-            height: 80px;
-            width: auto;
-            object-fit: contain;
-        }
+.ci-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  display: block;
+  transition: transform 0.6s var(--ease);
+}
+#greetingCard:hover .ci-bg { transform: scale(1.03); }
 
-        .greeting-badge {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(ellipse at center, #f2dba6 0%, #cba456 100%);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border: 2px solid #fff;
-            text-align: center;
-        }
+.ci-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.04) 45%, rgba(0,0,0,0.52) 100%);
+}
 
-        .greeting-badge span:first-child {
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+.ci-tag {
+  position: absolute;
+  bottom: 18px;
+  left: 26px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.82);
+  font-family: 'Montserrat', sans-serif;
+}
+.ci-tag::before { content: ''; display: block; width: 18px; height: 1px; background: var(--gold-light); flex-shrink: 0; }
 
-        .greeting-badge span:last-child {
-            font-size: 10px;
-            text-transform: uppercase;
-        }
+.ci-corner-tl,
+.ci-corner-br {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  z-index: 5;
+  pointer-events: none;
+}
+.ci-corner-tl { top: 14px; left: 14px; border-top: 1.5px solid rgba(201,160,61,0.55); border-left: 1.5px solid rgba(201,160,61,0.55); }
+.ci-corner-br { bottom: 14px; right: 14px; border-bottom: 1.5px solid rgba(201,160,61,0.55); border-right: 1.5px solid rgba(201,160,61,0.55); }
 
-        .greeting-subtitle {
-            color: #cba456;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 11px;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
+/* ── Card Body ──
+   FIX: body takes remaining 448px (686 - 238).
+   Footer bar is 38px, so body content area = 410px.
+   All sections have flex-shrink:0 EXCEPT .cb-msg which is max-height capped.
+   Signature (.cb-sig) is ALWAYS at the bottom, never cut.
+══════════════════════════════════════════════ */
+.cb {
+  flex: 1;
+  height: 0;               /* FIX: forces flex child to respect parent height */
+  padding: 18px 26px 14px;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
 
-        .greeting-title {
-            color: #2c3e50;
-            font-size: 28px;
-            margin: 0 0 20px 0;
-            line-height: 1.2;
-            font-weight: 700;
-        }
+/* AIS watermark */
+.cb::before {
+  content: 'AIS';
+  position: absolute;
+  bottom: 14px;
+  right: 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: rgba(201,160,61,0.05);
+  letter-spacing: 6px;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
 
-        .greeting-title .highlight {
-            color: #cba456;
-        }
+/* Header: logo + badge */
+.cb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-shrink: 0;           /* FIX: never shrink */
+}
 
-        .greeting-message {
-            color: #555;
-            line-height: 1.7;
-            font-size: 14px;
-            margin-bottom: 28px;
-            border-left: 2px solid #f2dba6;
-            padding-left: 20px;
-            flex: 1;
-        }
+.cb-logo { height: 55px; width: auto; object-fit: contain; max-width: 155px; }
+.cb-logo-fallback { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 800; color: var(--gold); letter-spacing: 2px; line-height: 1; }
 
-        .signature-area {
-            margin-top: auto;
-        }
+/* Gold badge */
+.cb-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  background: conic-gradient(from 0deg, #c49a2e, #e8c96a 40%, #c49a2e 55%, #a07c1e 70%, #c49a2e);
+  box-shadow: 0 4px 16px rgba(196,154,46,0.38), inset 0 1px 2px rgba(255,255,255,0.3);
+}
+.cb-badge::before {
+  content: '';
+  position: absolute;
+  top: -3px; left: -3px; right: -3px; bottom: -3px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,160,61,0.35);
+  pointer-events: none;
+}
+.cb-badge-inner {
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #d4af37, #b8942e);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+}
+.badge-l1 { font-size: 9px; font-weight: 800; color: var(--navy); letter-spacing: 0.8px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; line-height: 1.2; display: block; }
+.badge-l2 { font-size: 7.5px; font-weight: 700; color: var(--navy); letter-spacing: 0.3px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; line-height: 1.25; display: block; word-break: break-word; max-width: 48px; text-align: center; }
 
-        .signature-img {
-            height: 45px;
-            width: auto;
-            margin-bottom: 12px;
-        }
+/* Hairline rule */
+.cb-rule { width: 100%; height: 1px; background: linear-gradient(90deg, var(--gold) 0%, rgba(201,160,61,0.3) 55%, transparent 100%); margin-bottom: 9px; flex-shrink: 0; }
 
-        .signature-name {
-            font-weight: 800;
-            color: #1a2e45;
-            font-size: 16px;
-            margin: 0;
-        }
+/* Occasion label */
+.cb-occ-label { font-size: 8px; font-weight: 700; letter-spacing: 3.5px; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 6px; font-family: 'Montserrat', sans-serif; flex-shrink: 0; }
 
-        .signature-title {
-            font-size: 10px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 2px 0;
-            font-weight: 600;
-        }
+/* Dear line */
+.cb-dear { font-family: 'Cormorant Garamond', serif; font-size: 12px; font-style: italic; color: var(--grey-600); margin-bottom: 2px; flex-shrink: 0; }
 
-        .signature-company {
-            font-weight: bold;
-            font-size: 11px;
-            color: #1a2e45;
-            margin-top: 4px;
-        }
+/* Main title */
+.cb-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: var(--navy); line-height: 1.2; letter-spacing: -0.3px; margin-bottom: 9px; flex-shrink: 0; }
+.cb-title .gold-span { color: var(--gold-deep); }
 
-        /* Loading State */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
+/* Accent bar */
+.cb-accent { width: 28px; height: 2px; background: var(--gold); border-radius: 2px; margin-bottom: 9px; flex-shrink: 0; }
 
-        /* Responsive */
-        @media (max-width: 968px) {
-            .generator-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .controls-panel {
-                position: relative;
-                top: 0;
-            }
-            
-            .card-content {
-                flex-direction: column;
-            }
-            
-            .card-left {
-                width: 100%;
-                height: 150px;
-            }
-            
-            .card-right {
-                width: 100%;
-                padding: 24px;
-            }
-            
-            .decoration-text {
-                font-size: 40px;
-                bottom: 10px;
-                left: 10px;
-            }
-        }
-    </style>
+/* ── MESSAGE — FIX: bounded, never pushes sig out ──
+   flex: 0 1 auto with max-height cap so it shrinks
+   before the signature ever gets clipped.
+*/
+.cb-msg {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;          /* FIX: slightly smaller for fit guarantee */
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.72;
+  color: var(--grey-600);
+  border-left: 2px solid rgba(201,160,61,0.38);
+  padding-left: 12px;
+  flex: 0 1 auto;           /* FIX: shrinks if needed, never expands to push sig out */
+  overflow: hidden;
+  margin-bottom: 10px;
+  /* Soft fade if text would overflow — keeps layout clean */
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+/* ── SIGNATURE — FIX: never shrinks, always visible ── */
+.cb-sig {
+  border-top: 1px solid rgba(201,160,61,0.22);
+  padding-top: 10px;
+  flex-shrink: 0;           /* FIX: critical — will NEVER be compressed */
+  margin-top: auto;         /* FIX: pushes to bottom, but within card bounds */
+}
+
+.cb-sig-img { height: 32px; width: auto; object-fit: contain; display: block; margin-bottom: 5px; }
+
+.cb-sig-name { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 700; color: var(--navy); letter-spacing: 0.4px; margin-bottom: 2px; }
+
+.cb-sig-role {
+  font-size: 7px;           /* FIX: compact to guarantee fit */
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--grey-400);
+  line-height: 1.5;
+  margin-bottom: 3px;
+}
+
+.cb-sig-co {
+  font-size: 8px;           /* FIX: compact but readable */
+  font-weight: 600;
+  color: var(--blue-link);
+  letter-spacing: 0.2px;
+}
+
+/* Footer bar */
+.cf-bar {
+  background: var(--navy);
+  color: rgba(201,160,61,0.82);
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════
+   TOAST SYSTEM
+══════════════════════════════════════════════ */
+.toast-wrap { position: fixed; bottom: 28px; right: 28px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.toast {
+  background: var(--navy);
+  color: rgba(255,255,255,0.9);
+  padding: 13px 18px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.32);
+  border-left: 3px solid var(--gold);
+  animation: toastSlide 0.32s var(--ease);
+  min-width: 220px;
+  pointer-events: auto;
+}
+.toast.is-error   { border-left-color: var(--error-color); }
+.toast.is-success { border-left-color: var(--success); }
+.toast.is-info    { border-left-color: #6694c8; }
+
+@keyframes toastSlide {
+  from { opacity:0; transform:translateX(18px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+
+/* LOADING OVERLAY */
+.ld-overlay { position: fixed; inset: 0; background: rgba(4,4,12,0.68); z-index: 8888; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 18px; backdrop-filter: blur(3px); }
+.ld-overlay.show { display: flex; }
+.ld-ring { width: 42px; height: 42px; border: 3px solid rgba(201,160,61,0.18); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.75s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.ld-text { color: rgba(255,255,255,0.75); font-size: 11.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+
+/* ══════════════════════════════════════════════
+   PRINT STYLES — 5in × 7in
+══════════════════════════════════════════════ */
+@media print {
+  @page { size: 5in 7in; margin: 0; }
+
+  body > * { visibility: hidden !important; }
+  body > #printMount,
+  body > #printMount * { visibility: visible !important; }
+
+  #printMount {
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #greetingCard {
+    width: 5in !important;
+    height: 7in !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    animation: none !important;
+    overflow: hidden !important;
+  }
+
+  .ci-zone { height: 2.38in !important; }
+  .cb { padding: 0.2in 0.3in 0.15in !important; }
+  .cb::before { display: none !important; }
+  .cf-bar { padding: 0.1in 0.2in !important; }
+  .page-bg, .app-shell, .ld-overlay, .toast-wrap { display: none !important; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 24px 18px; }
+  .ctrl-panel { position: relative; top: 0; }
+  #greetingCard { width: 100%; max-width: 490px; }
+  .card-stage { padding: 28px 18px; }
+}
+
+@media (max-width: 560px) {
+  #greetingCard { max-width: 340px; height: 476px; }
+  .cb-title { font-size: 20px; }
+  .ci-zone { height: 166px; }
+  .cb { padding: 14px 18px 12px; }
+  .cb-badge { width: 54px; height: 54px; }
+  .badge-l1 { font-size: 8px; }
+  .badge-l2 { font-size: 6.5px; max-width: 38px; }
+  .cb-logo { height: 36px; }
+  .cb-msg { font-size: 11px; }
+}
+
+  </style>
 </head>
 <body>
-    <div class="generator-container">
-        <!-- Left Panel - Controls -->
-        <div class="controls-panel">
-            <h2>✨ Greeting Generator</h2>
-            
-            <div class="form-group">
-                <label>🎉 Greeting Type</label>
-                <select id="greetingType">
-                    <option value="birthday">🎂 Birthday</option>
-                    <option value="marriage">💍 Marriage Anniversary</option>
-                    <option value="showroom">🏢 Showroom Anniversary</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>👤 Dealer Name</label>
-                <input type="text" id="dealerName" placeholder="Enter dealer name" value="Mr. Arpit">
-            </div>
-            
-            <div id="showroomFields" class="conditional-field">
-                <div class="form-group">
-                    <label>🏬 Showroom Name</label>
-                    <input type="text" id="showroomName" placeholder="Enter showroom name" value="Pune Showroom">
-                </div>
-                <div class="form-group">
-                    <label>🎂 Anniversary Number</label>
-                    <input type="number" id="anniversaryNumber" min="1" max="50" value="5">
-                </div>
-            </div>
-            
-            <div class="btn-group">
-    <button class="btn btn-primary" id="printBtn">🖨️ Print / Save as PDF</button>
-</div>
-        </div>
-        
-        <!-- Right Panel - Preview -->
-        <div class="preview-panel">
-            <div class="preview-header">
-                <h3>Live Preview</h3>
-                <p>Changes update automatically</p>
-            </div>
-            <div id="greetingCardContainer">
-                <!-- Greeting Card will be rendered here -->
-            </div>
-        </div>
+
+<div class="page-bg" aria-hidden="true"></div>
+
+<div class="app-shell">
+
+  <!-- CONTROLS PANEL -->
+  <aside class="ctrl-panel" aria-label="Card controls">
+    <div class="ctrl-header">
+      <div class="ctrl-brand">AIS Windows</div>
+      <h1 class="ctrl-title">Luxury <em>Greeting</em><br>Generator</h1>
     </div>
 
-    <script>
-        // Function to check if local image exists and return appropriate source
-        function getImageSource(imageName) {
-            // Try to load from local folder first
-            const img = new Image();
-            img.src = imageName;
-            
-            // Return the local path - if it fails, the onerror will handle it
-            return imageName;
-        }
-        
-        // Ordinal number converter
-        function getOrdinal(n) {
-            n = parseInt(n);
-            const s = ["th", "st", "nd", "rd"];
-            const v = n % 100;
-            return n + (s[(v - 20) % 10] || s[v] || s[0]);
-        }
-        
-        // Generate greeting message based on type
-        function generateGreetingMessage(type, dealerName, showroomName, anniversaryNum) {
-            const name = dealerName || "Valued Partner";
-            
-            switch(type) {
-                case 'birthday':
-                    return `Dear ${name}, Wishing you a very Happy Birthday! May this year bring success, happiness, and growth.`;
-                case 'marriage':
-                    return `Dear ${name}, Wishing you a wonderful Anniversary! May your journey together continue to be filled with happiness.`;
-                case 'showroom':
-                    const ordinal = getOrdinal(anniversaryNum || 1);
-                    const showroom = showroomName || "your showroom";
-                    return `Congratulations ${name} on your ${ordinal} ${showroom} Showroom Anniversary! Your partnership and growth with AIS Windows is truly valued.`;
-                default:
-                    return `Dear ${name}, Wishing you all the best!`;
-            }
-        }
-        
-        // Get greeting title based on type
-        function getGreetingTitle(type, name, anniversaryNum, showroomName) {
-            switch(type) {
-                case 'birthday':
-                    return `Happy Birthday!`;
-                case 'marriage':
-                    return `Happy Anniversary!`;
-                case 'showroom':
-                    const ordinal = getOrdinal(anniversaryNum || 1);
-                    return `Happy ${ordinal} Showroom<br>Anniversary!`;
-                default:
-                    return `Greetings!`;
-            }
-        }
-        
-        // Get decoration text based on type
-        function getDecorationText(type) {
-            switch(type) {
-                case 'birthday': return "HBD";
-                case 'marriage': return "LOVE";
-                case 'showroom': return "AIS";
-                default: return "WISH";
-            }
-        }
-        
-        // Get badge text based on type
-        function getBadgeText(type) {
-            switch(type) {
-                case 'birthday': return { line1: "Happy", line2: "Birthday" };
-                case 'marriage': return { line1: "Happy", line2: "Anniversary" };
-                case 'showroom': return { line1: "Showroom", line2: "Anniversary" };
-                default: return { line1: "Happy", line2: "Day" };
-            }
-        }
-        
-        // Get background class based on type
-        function getBackgroundClass(type) {
-            switch(type) {
-                case 'birthday': return "birthday-bg";
-                case 'marriage': return "marriage-bg";
-                case 'showroom': return "showroom-bg";
-                default: return "birthday-bg";
-            }
-        }
-    
-        // Update preview live
-        function updatePreview() {
-            const greetingType = document.getElementById('greetingType').value;
-            const dealerName = document.getElementById('dealerName').value;
-            const showroomName = document.getElementById('showroomName').value;
-            const anniversaryNumber = document.getElementById('anniversaryNumber').value;
-            
-            // Show/hide conditional fields
-            const showroomFields = document.getElementById('showroomFields');
-            if (greetingType === 'showroom') {
-                showroomFields.classList.add('show');
-            } else {
-                showroomFields.classList.remove('show');
-            }
-            
-            // Generate content
-            const message = generateGreetingMessage(greetingType, dealerName, showroomName, anniversaryNumber);
-            const title = getGreetingTitle(greetingType, dealerName, anniversaryNumber, showroomName);
-            const decoration = getDecorationText(greetingType);
-            const badge = getBadgeText(greetingType);
-            const bgClass = getBackgroundClass(greetingType);
-            
-            // Build the card HTML with local logo and signature - NO crossorigin for local files
-            const cardHTML = `
-                <div class="greeting-card" id="greetingCard">
-                    <div class="card-content">
-                        <div class="card-left ${bgClass}">
-                            <div class="decoration-text">${decoration}</div>
-                        </div>
-                        <div class="card-right">
-                            <div class="card-header">
-                                <img src="logo.png" alt="AIS Logo" class="ais-logo" 
-     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%230054A6\'/%3E%3Ctext x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3EAIS%3C/text%3E%3C/svg%3E'">
-                                <div class="greeting-badge">
-                                    <span>${badge.line1}</span>
-                                    <span>${badge.line2}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="greeting-subtitle">Special Celebration</div>
-                            <div class="greeting-title">Dear ${dealerName || 'Valued Partner'}!<br>Wishing You a<br><span class="highlight">${title}</span></div>
-                            
-                            <div class="greeting-message">
-                                ${message}
-                            </div>
-                            
-                            <div class="signature-area">
-                               <img src="signature.png" alt="Signature" class="signature-img" 
-     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'50\'%3E%3Crect width=\'120\' height=\'50\' fill=\'%23f0f0f0\'/%3E%3Ctext x=\'10\' y=\'30\' fill=\'%23666\'%3ESanju G%3C/text%3E%3C/svg%3E'">
-                                <p class="signature-name">Sanju G</p>
-                                <p class="signature-title">HEAD - CHANNEL MANAGEMENT<br>ACTIVATION & ENABLEMENT</p>
-                                <p class="signature-company">AIS Windows</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer-bar">
-                        AIS Windows | A Division of Asahi India Glass Ltd.
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('greetingCardContainer').innerHTML = cardHTML;
-        }
-        
-      // Print function - uses browser's native print dialog
-function printGreeting() {
-    const element = document.getElementById('greetingCard');
-    if (!element) {
-        alert('Please wait for the card to load.');
-        return;
-    }
-    
-    // Create a clone of the card for printing
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>AIS Greeting Card</title>
-            <style>
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    min-height: 100vh;
-                    background: white;
-                    padding: 20px;
-                }
-                ${document.querySelector('style').innerHTML}
-                .greeting-card {
-                    box-shadow: none;
-                    margin: 0 auto;
-                    max-width: 100%;
-                }
-                .greeting-card:hover {
-                    transform: none;
-                }
-                @media print {
-                    body {
-                        padding: 0;
-                        margin: 0;
-                    }
-                    .greeting-card {
-                        box-shadow: none;
-                        page-break-inside: avoid;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            ${element.outerHTML}
-            <script>
-                window.onload = () => {
-                    window.print();
-                    setTimeout(() => window.close(), 500);
-                };
-            <\/script>
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
+    <div class="ctrl-divider">
+      <div class="ctrl-divider-line"></div>
+      <div class="ctrl-divider-gem"></div>
+      <div class="ctrl-divider-line"></div>
+    </div>
+
+    <div class="form-block">
+      <label class="form-lbl" for="fOccasion"><i class="fas fa-gift"></i> Occasion</label>
+      <div class="select-wrap">
+        <select class="form-ctrl" id="fOccasion">
+          <option value="birthday">🎂 Birthday Celebration</option>
+          <option value="marriage">💍 Wedding Anniversary</option>
+          <option value="showroom">🏢 Showroom Anniversary</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-block">
+      <label class="form-lbl"><i class="fas fa-swatchbook"></i> Template Style</label>
+      <div class="tmpl-grid" id="tmplGrid"></div>
+    </div>
+
+    <div class="form-block">
+      <label class="form-lbl" for="fName"><i class="fas fa-user-tie"></i> Recipient Name</label>
+      <input type="text" class="form-ctrl" id="fName" placeholder="e.g. Mr. Arpit Sharma" value="Mr. Arpit Sharma">
+      <div class="field-error" id="errName">Please enter the recipient's name.</div>
+    </div>
+
+    <div class="cond-block" id="condShowroom">
+      <div class="form-block">
+        <label class="form-lbl" for="fShowroom"><i class="fas fa-store"></i> Showroom Name</label>
+        <input type="text" class="form-ctrl" id="fShowroom" placeholder="e.g. Pune Flagship" value="Pune Flagship">
+        <div class="field-error" id="errShowroom">Please enter the showroom name.</div>
+      </div>
+      <div class="form-block">
+        <label class="form-lbl" for="fYear"><i class="fas fa-hashtag"></i> Anniversary Year No.</label>
+        <input type="number" class="form-ctrl" id="fYear" min="1" max="99" value="5" style="border-radius:var(--r-pill)">
+      </div>
+    </div>
+
+    <div class="action-stack">
+      <button class="btn btn-gen" id="btnGenerate"><i class="fas fa-magic"></i> Generate Card</button>
+      <button class="btn btn-pdf" id="btnPdf" disabled><i class="fas fa-file-pdf"></i> Download as PDF</button>
+      <button class="btn btn-img" id="btnImg" disabled><i class="fas fa-image"></i> Download as Image</button>
+      <button class="btn btn-rst" id="btnReset"><i class="fas fa-undo"></i> Reset Form</button>
+    </div>
+
+    <div class="ctrl-foot">
+      <i class="fas fa-shield-alt" style="margin-right:5px"></i>
+      Premium Edition &nbsp;·&nbsp; Est. 1987
+    </div>
+  </aside>
+
+  <!-- PREVIEW AREA -->
+  <main class="preview-area" aria-label="Card preview">
+    <div class="preview-topbar">
+      <div class="preview-topbar-l"><i class="fas fa-eye"></i> Live Preview</div>
+      <div class="preview-topbar-r">5 × 7 in &nbsp;·&nbsp; Print quality &nbsp;·&nbsp; High-res export</div>
+    </div>
+    <div class="card-stage" id="cardStage">
+      <div class="stage-empty" id="stageEmpty">
+        <i class="fas fa-layer-group"></i>
+        <p>Fill in the details on the left and click <strong>Generate Card</strong> to preview your premium greeting.</p>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- Hidden print mount -->
+<div id="printMount" style="display:none;position:fixed;inset:0;z-index:9990;background:white;"></div>
+
+<!-- Loading overlay -->
+<div class="ld-overlay" id="ldOverlay" aria-live="polite">
+  <div class="ld-ring"></div>
+  <div class="ld-text" id="ldText">Processing…</div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════════════
+   TEMPLATE DATA
+══════════════════════════════════════════════ */
+const TEMPLATES = {
+  birthday: [
+    {
+      id: 'b1', name: 'Classic',
+      imageUrl: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'Birthday Celebration', badgeL1: 'HAPPY', badgeL2: 'BIRTHDAY', occTag: 'Birthday',
+      buildTitle: () => `Wishing You A <span class="gold-span">Joyous Birthday</span>`,
+      buildMsg:   () => `On your special day, we celebrate not just the occasion but the remarkable partnership we share. May the year ahead bring you unparalleled success, abundant joy, and prosperity beyond measure. It is our true privilege to have you as a cherished member of the AIS Windows family.`,
+    },
+    {
+      id: 'b2', name: 'Milestone',
+      imageUrl: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'A Milestone Birthday', badgeL1: 'MANY', badgeL2: 'HAPPY RETURNS', occTag: 'Birthday',
+      buildTitle: () => `Celebrating Your <span class="gold-span">Remarkable Journey</span>`,
+      buildMsg:   () => `Every passing year adds another chapter to your legacy of excellence and integrity. On this milestone birthday, AIS Windows celebrates the extraordinary journey you have built — one defined by trust, dedication, and inspired leadership. May every dream you hold be fully realized in the year ahead.`,
+    },
+    {
+      id: 'b3', name: 'Warmth',
+      imageUrl: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'A Day to Cherish', badgeL1: 'WITH', badgeL2: 'BLESSINGS', occTag: 'Birthday',
+      buildTitle: () => `A Celebration <span class="gold-span">Filled With Joy</span>`,
+      buildMsg:   () => `Birthdays are moments to pause, reflect, and celebrate the beautiful story of a life well lived. We feel genuinely fortunate to be part of your journey as a trusted partner and valued friend. May this day be as wonderful and extraordinary as the person you truly are.`,
+    },
+  ],
+  marriage: [
+    {
+      id: 'm1', name: 'Eternal',
+      imageUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'Wedding Anniversary', badgeL1: 'HAPPY', badgeL2: 'ANNIVERSARY', occTag: 'Anniversary',
+      buildTitle: () => `Celebrating Your <span class="gold-span">Beautiful Journey</span>`,
+      buildMsg:   () => `As you celebrate another beautiful year of togetherness, we extend our warmest congratulations. The strength, harmony, and grace of your partnership mirrors the same values we cherish at AIS Windows. May your shared journey continue to flourish with love, laughter, and lasting happiness.`,
+    },
+    {
+      id: 'm2', name: 'Golden',
+      imageUrl: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'With Warmest Wishes', badgeL1: 'GOLDEN', badgeL2: 'BLESSINGS', occTag: 'Anniversary',
+      buildTitle: () => `A Union Blessed <span class="gold-span">With Grace</span>`,
+      buildMsg:   () => `Together, you have woven a tapestry of love, trust, and shared dreams that grows richer with every year. On this cherished anniversary, AIS Windows wishes you continued happiness, enduring strength, and a future as luminous as gold. May every chapter ahead be more beautiful than the last.`,
+    },
+    {
+      id: 'm3', name: 'Harmony',
+      imageUrl: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'Anniversary Greetings', badgeL1: 'LOVE &', badgeL2: 'JOY', occTag: 'Anniversary',
+      buildTitle: () => `To Love & <span class="gold-span">Lasting Prosperity</span>`,
+      buildMsg:   () => `The harmony of a truly loving partnership is one of life's greatest gifts. On your anniversary, we celebrate not just a date on the calendar but a shared life filled with meaning, devotion, and mutual respect. From all of us at AIS Windows, we extend heartfelt wishes for many more joyful years together.`,
+    },
+  ],
+  showroom: [
+    {
+      id: 's1', name: 'Milestone',
+      imageUrl: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'Showroom Anniversary', badgeL1: 'SHOWROOM', badgeL2: 'ANNIVERSARY', occTag: 'Milestone',
+      buildTitle: (n, ord) => `Celebrating the <span class="gold-span">${ord} Anniversary</span>`,
+      buildMsg:   (n, sr, ord) => `Congratulations on this remarkable milestone — the ${ord} Anniversary of ${sr}! Your commitment to excellence and your unwavering partnership have been instrumental in our shared journey. AIS Windows is proud to stand beside you as you celebrate this outstanding achievement and look toward an even brighter future.`,
+    },
+    {
+      id: 's2', name: 'Excellence',
+      imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'A Legacy of Excellence', badgeL1: 'YEARS OF', badgeL2: 'EXCELLENCE', occTag: 'Excellence',
+      buildTitle: (n, ord) => `A Legacy That <span class="gold-span">Truly Inspires</span>`,
+      buildMsg:   (n, sr, ord) => `Excellence is not a destination — it is a daily choice made with conviction. Your ${ord} year stands as a testament to the extraordinary standards you have maintained. ${sr} is a beacon of what dedication and passion can achieve. AIS Windows celebrates your enduring legacy with immense pride.`,
+    },
+    {
+      id: 's3', name: 'Growth',
+      imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&auto=format&fit=crop&q=80',
+      occasionLbl: 'Partnership Milestone', badgeL1: 'PROUD', badgeL2: 'PARTNER', occTag: 'Growth',
+      buildTitle: (n, ord) => `Growing Stronger <span class="gold-span">Together</span>`,
+      buildMsg:   (n, sr, ord) => `Growth is the language of those who dare to dream big and act with purpose. On the occasion of the ${ord} Anniversary of ${sr}, AIS Windows honors the vision, trust, and relentless effort that has made this showroom a benchmark of success. Here's to many more years of remarkable growth, deep partnership, and shared prosperity.`,
+    },
+  ],
+};
+
+/* ══════════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════════ */
+function getOrdinal(n) {
+  n = Math.max(1, parseInt(n) || 1);
+  const s = ['th','st','nd','rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
-        
-        // Add event listeners for live preview
-        document.getElementById('greetingType').addEventListener('change', updatePreview);
-        document.getElementById('dealerName').addEventListener('input', updatePreview);
-        document.getElementById('showroomName').addEventListener('input', updatePreview);
-        document.getElementById('anniversaryNumber').addEventListener('input', updatePreview);
-        
-        // Add download button listeners
-       document.getElementById('printBtn').addEventListener('click', printGreeting);
-        
-        // Initial render
-        updatePreview();
-        
-        // Add loading spinner style
-        const style = document.createElement('style');
-        style.textContent = `
-            .loading-spinner {
-                display: inline-block;
-                width: 16px;
-                height: 16px;
-                border: 2px solid #f3f3f3;
-                border-top: 2px solid #fff;
-                border-radius: 50%;
-                animation: spin 0.8s linear infinite;
-                margin-right: 8px;
-            }
-            
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            
-            .btn:disabled {
-                opacity: 0.7;
-                cursor: not-allowed;
-                transform: none;
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+
+function toast(msg, type = 'info') {
+  const wrap = document.getElementById('toastWrap');
+  const icons = { success:'fa-check-circle', error:'fa-exclamation-circle', info:'fa-info-circle' };
+  const el = document.createElement('div');
+  el.className = `toast is-${type}`;
+  el.innerHTML = `<i class="fas ${icons[type]||icons.info}" style="font-size:12px;flex-shrink:0"></i>${msg}`;
+  wrap.appendChild(el);
+  setTimeout(() => el.remove(), 3800);
+}
+
+function showLoader(text) {
+  document.getElementById('ldText').textContent = text;
+  document.getElementById('ldOverlay').classList.add('show');
+}
+function hideLoader() {
+  document.getElementById('ldOverlay').classList.remove('show');
+}
+function setExportEnabled(on) {
+  document.getElementById('btnPdf').disabled = !on;
+  document.getElementById('btnImg').disabled = !on;
+}
+
+/* Wait for all images in an element to fully load */
+function waitForImages(el) {
+  const imgs = Array.from(el.querySelectorAll('img'));
+  return Promise.all(imgs.map(img => {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
+      /* Force reload if stalled */
+      if (img.complete) resolve();
+    });
+  }));
+}
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+const State = { occasion: 'birthday', tmplIdx: 0, ready: false };
+
+/* ══════════════════════════════════════════════
+   UI CONTROLLER
+══════════════════════════════════════════════ */
+const UI = {
+  init() {
+    this._bindEvents();
+    this._renderTemplates('birthday');
+    setExportEnabled(false);
+  },
+
+  _bindEvents() {
+    document.getElementById('fOccasion').addEventListener('change', e => {
+      State.occasion = e.target.value;
+      State.tmplIdx  = 0;
+      this._renderTemplates(State.occasion);
+      this._toggleShowroomFields(State.occasion === 'showroom');
+      this._markDirty();
+    });
+    document.getElementById('btnGenerate').addEventListener('click', () => this.generate());
+    document.getElementById('btnPdf').addEventListener('click', () => Exporter.pdf());
+    document.getElementById('btnImg').addEventListener('click', () => Exporter.image());
+    document.getElementById('btnReset').addEventListener('click', () => this.reset());
+    ['fName','fShowroom','fYear'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', () => this._markDirty());
+    });
+  },
+
+  _toggleShowroomFields(show) {
+    document.getElementById('condShowroom').classList.toggle('show', show);
+  },
+
+  _markDirty() {
+    State.ready = false;
+    setExportEnabled(false);
+  },
+
+  _renderTemplates(occ) {
+    const grid = document.getElementById('tmplGrid');
+    const list = TEMPLATES[occ] || [];
+    grid.innerHTML = '';
+    list.forEach((t, i) => {
+      const div = document.createElement('div');
+      div.className = 'tmpl-opt' + (i === State.tmplIdx ? ' is-selected' : '');
+      div.innerHTML = `
+        <img class="tmpl-img" src="${t.imageUrl}" alt="${t.name}" loading="lazy">
+        <div class="tmpl-overlay"></div>
+        <div class="tmpl-label">${t.name}</div>
+        <div class="tmpl-check"><i class="fas fa-check" style="font-size:8px;color:var(--navy)"></i></div>
+      `;
+      div.addEventListener('click', () => {
+        State.tmplIdx = i;
+        this._renderTemplates(State.occasion);
+        this._markDirty();
+      });
+      grid.appendChild(div);
+    });
+  },
+
+  _validate() {
+    let ok = true;
+    const nameEl  = document.getElementById('fName');
+    const nameErr = document.getElementById('errName');
+    if (!nameEl.value.trim()) {
+      nameEl.classList.add('is-error');
+      nameErr.classList.add('show');
+      ok = false;
+    } else {
+      nameEl.classList.remove('is-error');
+      nameErr.classList.remove('show');
+    }
+    if (State.occasion === 'showroom') {
+      const srEl  = document.getElementById('fShowroom');
+      const srErr = document.getElementById('errShowroom');
+      if (!srEl.value.trim()) {
+        srEl.classList.add('is-error');
+        srErr.classList.add('show');
+        ok = false;
+      } else {
+        srEl.classList.remove('is-error');
+        srErr.classList.remove('show');
+      }
+    }
+    return ok;
+  },
+
+  generate() {
+    if (!this._validate()) { toast('Please fill in all required fields.', 'error'); return; }
+    const name     = document.getElementById('fName').value.trim();
+    const showroom = document.getElementById('fShowroom').value.trim();
+    const year     = document.getElementById('fYear').value;
+    const ord      = getOrdinal(year);
+    const tmpl     = TEMPLATES[State.occasion][State.tmplIdx];
+    CardRenderer.render({ occasion: State.occasion, tmpl, name, showroom, ord });
+    State.ready = true;
+    setExportEnabled(true);
+    toast('Card generated successfully!', 'success');
+  },
+
+  reset() {
+    document.getElementById('fOccasion').value = 'birthday';
+    document.getElementById('fName').value     = 'Mr. Arpit Sharma';
+    document.getElementById('fShowroom').value = 'Pune Flagship';
+    document.getElementById('fYear').value     = '5';
+    State.occasion = 'birthday'; State.tmplIdx = 0; State.ready = false;
+    this._toggleShowroomFields(false);
+    this._renderTemplates('birthday');
+    this._markDirty();
+    const existing = document.getElementById('greetingCard');
+    if (existing) existing.remove();
+    const empty = document.getElementById('stageEmpty');
+    if (empty) empty.style.display = '';
+    document.querySelectorAll('.field-error').forEach(e => e.classList.remove('show'));
+    document.querySelectorAll('.form-ctrl.is-error').forEach(e => e.classList.remove('is-error'));
+    toast('Form has been reset.', 'info');
+  },
+};
+
+/* ══════════════════════════════════════════════
+   CARD RENDERER
+══════════════════════════════════════════════ */
+const CardRenderer = {
+  render({ occasion, tmpl, name, showroom, ord }) {
+    let titleHTML, msgText;
+    if (occasion === 'showroom') {
+      titleHTML = tmpl.buildTitle(name, ord);
+      msgText   = tmpl.buildMsg(name, showroom || 'your esteemed showroom', ord);
+    } else {
+      titleHTML = tmpl.buildTitle(name, ord);
+      msgText   = tmpl.buildMsg(name);
+    }
+
+    const cardEl = document.createElement('div');
+    cardEl.id = 'greetingCard';
+    /* FIX: crossorigin="anonymous" on ALL images for canvas capture */
+    cardEl.innerHTML = `
+      <div class="ci-zone">
+        <img class="ci-bg" src="${tmpl.imageUrl}"
+          alt="${tmpl.occTag}"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"
+          onerror="this.style.display='none'">
+        <div class="ci-overlay"></div>
+        <div class="ci-corner-tl"></div>
+        <div class="ci-corner-br"></div>
+        <div class="ci-tag">${tmpl.occTag}</div>
+      </div>
+
+      <div class="cb">
+        <div class="cb-header">
+          <img class="cb-logo" src="logo.png"
+          onerror="this.outerHTML='<div class=&quot;cb-logo-fallback&quot;>AIS</div>'">
+          <div class="cb-badge">
+            <div class="cb-badge-inner">
+              <span class="badge-l1">${tmpl.badgeL1}</span>
+              <span class="badge-l2">${tmpl.badgeL2}</span>
+            </div>
+          </div>
+        </div>
+        <div class="cb-rule"></div>
+        <div class="cb-occ-label">${tmpl.occasionLbl}</div>
+        <div class="cb-dear">Dear ${name},</div>
+        <h2 class="cb-title">${titleHTML}</h2>
+        <div class="cb-accent"></div>
+        <p class="cb-msg">${msgText}</p>
+        <div class="cb-sig">
+          <img class="cb-sig-img" src="signature.png" alt="Signature"
+            onerror="this.style.display='none'">
+          <div class="cb-sig-name">Sanju G</div>
+          <div class="cb-sig-role">HEAD – CHANNEL MANAGEMENT<br>ACTIVATION &amp; ENABLEMENT</div>
+          <div class="cb-sig-co">AIS Windows | A Division of Asahi India Glass Ltd.</div>
+        </div>
+      </div>
+      <div class="cf-bar">Excellence in Every Detail &nbsp;·&nbsp; Since 1987</div>
+    `;
+
+    const stage    = document.getElementById('cardStage');
+    const existing = document.getElementById('greetingCard');
+    if (existing) existing.remove();
+    const empty = document.getElementById('stageEmpty');
+    if (empty) empty.style.display = 'none';
+    stage.appendChild(cardEl);
+  },
+};
+
+/* ══════════════════════════════════════════════
+   EXPORTER
+══════════════════════════════════════════════ */
+const Exporter = {
+
+  /* ─── PDF via dedicated print window ─── */
+  async pdf() {
+    const card = document.getElementById('greetingCard');
+    if (!card) return;
+    showLoader('Preparing PDF…');
+
+    try {
+      const pw = window.open('', '_blank', 'width=600,height=900,menubar=no,toolbar=no');
+      if (!pw) { toast('Pop-up blocked. Please allow pop-ups and try again.', 'error'); return; }
+      pw.document.write(this._buildPrintHTML(card.outerHTML));
+      pw.document.close();
+    } catch (err) {
+      console.error('PDF error:', err);
+      toast('PDF export failed. Please try again.', 'error');
+    } finally {
+      hideLoader();
+    }
+  },
+
+  _buildPrintHTML(cardHTML) {
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AIS Windows Greeting Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @page { size:5in 7in; margin:0; }
+    *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Montserrat',sans-serif;
+      background:white;
+      display:flex; align-items:center; justify-content:center;
+      width:5in; min-height:7in; overflow:hidden;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    :root {
+      --gold:#c9a03d; --gold-light:#d9b84a; --gold-deep:#a07c1e;
+      --navy:#1a1a2e; --cream:#fdfbf6; --grey-600:#6b6b82;
+      --grey-400:#aaaabc; --blue-link:#1a5fb4;
+    }
+    #greetingCard {
+      width:5in; height:7in;
+      background:var(--cream); border-radius:0; overflow:hidden;
+      box-shadow:none; animation:none;
+      display:flex; flex-direction:column; position:relative; flex-shrink:0;
+    }
+    .ci-zone { position:relative; width:100%; height:2.38in; flex-shrink:0; overflow:hidden; }
+    .ci-bg { width:100%; height:100%; object-fit:cover; object-position:center 40%; display:block; }
+    .ci-overlay { position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0.10) 0%,rgba(0,0,0,0.04) 45%,rgba(0,0,0,0.52) 100%); }
+    .ci-corner-tl,.ci-corner-br { position:absolute; width:22px; height:22px; z-index:5; }
+    .ci-corner-tl { top:14px; left:14px; border-top:1.5px solid rgba(201,160,61,0.55); border-left:1.5px solid rgba(201,160,61,0.55); }
+    .ci-corner-br { bottom:14px; right:14px; border-bottom:1.5px solid rgba(201,160,61,0.55); border-right:1.5px solid rgba(201,160,61,0.55); }
+    .ci-tag { position:absolute; bottom:18px; left:26px; display:flex; align-items:center; gap:10px; font-size:8.5px; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.82); }
+    .ci-tag::before { content:''; display:block; width:18px; height:1px; background:var(--gold-light); flex-shrink:0; }
+    .cb {
+      flex:1; height:0;
+      padding:0.2in 0.3in 0.15in;
+      display:flex; flex-direction:column;
+      background:var(--cream); position:relative; overflow:hidden;
+    }
+    .cb::before {
+      content:'AIS'; position:absolute; bottom:14px; right:18px;
+      font-family:'Montserrat',sans-serif; font-size:52px; font-weight:800;
+      color:rgba(201,160,61,0.05); letter-spacing:6px; pointer-events:none; line-height:1;
+    }
+    .cb-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-shrink:0; }
+    .cb-logo { height:55px; width:auto; object-fit:contain; max-width:155px; }
+    .cb-logo-fallback { font-family:'Montserrat',sans-serif; font-size:18px; font-weight:800; color:var(--gold); letter-spacing:2px; }
+    .cb-badge { width:64px; height:64px; border-radius:50%; flex-shrink:0; position:relative; background:conic-gradient(from 0deg,#c49a2e,#e8c96a 40%,#c49a2e 55%,#a07c1e 70%,#c49a2e); box-shadow:0 4px 14px rgba(196,154,46,0.35); }
+    .cb-badge::before { content:''; position:absolute; top:-3px; left:-3px; right:-3px; bottom:-3px; border-radius:50%; border:1px solid rgba(201,160,61,0.35); }
+    .cb-badge-inner { position:absolute; inset:7px; border-radius:50%; background:linear-gradient(145deg,#d4af37,#b8942e); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4px; }
+    .badge-l1 { font-size:9px; font-weight:800; color:var(--navy); letter-spacing:0.8px; text-transform:uppercase; font-family:'Montserrat',sans-serif; line-height:1.2; display:block; }
+    .badge-l2 { font-size:7.5px; font-weight:700; color:var(--navy); letter-spacing:0.3px; text-transform:uppercase; font-family:'Montserrat',sans-serif; line-height:1.25; display:block; word-break:break-word; max-width:48px; text-align:center; }
+    .cb-rule { width:100%; height:1px; background:linear-gradient(90deg,var(--gold) 0%,rgba(201,160,61,0.3) 55%,transparent 100%); margin-bottom:9px; flex-shrink:0; }
+    .cb-occ-label { font-size:8px; font-weight:700; letter-spacing:3.5px; text-transform:uppercase; color:var(--gold-deep); margin-bottom:6px; font-family:'Montserrat',sans-serif; flex-shrink:0; }
+    .cb-dear { font-family:'Cormorant Garamond',serif; font-size:12px; font-style:italic; color:var(--grey-600); margin-bottom:2px; flex-shrink:0; }
+    .cb-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:700; color:var(--navy); line-height:1.2; letter-spacing:-0.3px; margin-bottom:9px; flex-shrink:0; }
+    .gold-span { color:var(--gold-deep); }
+    .cb-accent { width:28px; height:2px; background:var(--gold); border-radius:2px; margin-bottom:9px; flex-shrink:0; }
+    .cb-msg {
+      font-family:'Cormorant Garamond',serif; font-size:12px; font-style:italic; font-weight:400;
+      line-height:1.72; color:var(--grey-600); border-left:2px solid rgba(201,160,61,0.38);
+      padding-left:12px; flex:0 1 auto; overflow:hidden; margin-bottom:10px;
+    }
+    .cb-sig { border-top:1px solid rgba(201,160,61,0.22); padding-top:10px; flex-shrink:0; margin-top:auto; }
+    .cb-sig-img { height:32px; width:auto; object-fit:contain; display:block; margin-bottom:5px; }
+    .cb-sig-name { font-family:'Cormorant Garamond',serif; font-size:14px; font-weight:700; color:var(--navy); letter-spacing:0.4px; margin-bottom:2px; }
+    .cb-sig-role { font-size:7px; font-weight:700; letter-spacing:0.9px; text-transform:uppercase; color:var(--grey-400); line-height:1.5; margin-bottom:3px; }
+    .cb-sig-co { font-size:8px; font-weight:600; color:var(--blue-link); letter-spacing:0.2px; }
+    .cf-bar { background:var(--navy); color:rgba(201,160,61,0.82); text-align:center; padding:10px 20px; font-size:8px; font-weight:700; letter-spacing:3px; text-transform:uppercase; font-family:'Montserrat',sans-serif; flex-shrink:0; }
+    @media print { body { width:5in; } #greetingCard { width:5in; height:7in; } }
+  </style>
+</head>
+<body>
+  ${cardHTML}
+  <script>
+    window.onload = function() {
+      /* Wait for fonts + images before printing */
+      setTimeout(function() {
+        window.print();
+        setTimeout(function() { window.close(); }, 600);
+      }, 1600);
+    };
+  <\/script>
+</body>
+</html>`;
+  },
+
+  /* ─── Image via html2canvas (fully fixed) ─── */
+  async image() {
+    const card = document.getElementById('greetingCard');
+    if (!card) return;
+
+    showLoader('Generating image — please wait…');
+
+    /*
+     * FIX STRATEGY:
+     * 1. Clone card into an off-screen fixed container (no responsive shifts)
+     * 2. Strip all animations and transforms from clone
+     * 3. Remove box-shadow (breaks canvas in some browsers)
+     * 4. Force exact dimensions on clone and its child images
+     * 5. Wait for ALL images to load via onload/onerror
+     * 6. Add explicit 300ms delay after image-load to let CSS render
+     * 7. Run html2canvas with useCORS:true, allowTaint:false
+     * 8. Fallback to allowTaint:true at lower scale if primary fails
+     */
+
+    const CARD_W = 490;
+    const CARD_H = 686;
+
+    /* Build off-screen container */
+    const container = document.createElement('div');
+    Object.assign(container.style, {
+      position:   'fixed',
+      top:        '-9999px',
+      left:       '-9999px',
+      width:      CARD_W + 'px',
+      height:     CARD_H + 'px',
+      overflow:   'hidden',
+      zIndex:     '-9999',
+      background: '#fdfbf6',
+      /* No transform, no filter, no border-radius on container */
+      transform:  'none',
+      filter:     'none',
+    });
+
+    /* Deep-clone and sanitize */
+    const clone = card.cloneNode(true);
+    Object.assign(clone.style, {
+      width:        CARD_W + 'px',
+      height:       CARD_H + 'px',
+      minHeight:    CARD_H + 'px',
+      maxHeight:    CARD_H + 'px',
+      animation:    'none',
+      transition:   'none',
+      transform:    'none',
+      borderRadius: '0',
+      boxShadow:    'none',   /* FIX: shadows can corrupt canvas output */
+      overflow:     'hidden',
+      flex:         'none',
+      position:     'relative',
+    });
+    clone.id = 'greetingCardClone';
+
+    /* Strip hover transitions and animations from all children */
+    clone.querySelectorAll('*').forEach(el => {
+      el.style.animation  = 'none';
+      el.style.transition = 'none';
+      /* Remove mask-image that we use for .cb-msg fade — not needed in export */
+      if (el.classList.contains('cb-msg')) {
+        el.style.webkitMaskImage = 'none';
+        el.style.maskImage       = 'none';
+        el.style.overflow        = 'hidden';
+      }
+    });
+
+    /* Fix all images: ensure crossorigin + force reload from cache for canvas */
+    const cloneImgs = Array.from(clone.querySelectorAll('img'));
+    cloneImgs.forEach(img => {
+      img.setAttribute('crossorigin', 'anonymous');
+      img.setAttribute('referrerpolicy', 'no-referrer');
+      /* Append cache-bust only for external images (Unsplash etc.) */
+      const src = img.getAttribute('src') || '';
+      if (src.startsWith('http') && !src.includes('_cb=')) {
+        img.src = src + (src.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+      }
+    });
+
+    container.appendChild(clone);
+    document.body.appendChild(container);
+
+    /* Wait for all images to finish loading */
+    try {
+      await Promise.all(cloneImgs.map(img => {
+        return new Promise(resolve => {
+          if (img.complete && img.naturalWidth > 0) { resolve(); return; }
+          img.addEventListener('load',  resolve, { once: true });
+          img.addEventListener('error', resolve, { once: true });
+          /* Safety timeout — don't block forever */
+          setTimeout(resolve, 8000);
+        });
+      }));
+
+      /* Additional render-settle delay after images load */
+      await new Promise(r => setTimeout(r, 350));
+
+      /* PRIMARY ATTEMPT: high quality, strict CORS */
+      let canvas;
+      try {
+        canvas = await html2canvas(clone, {
+          scale:           3,            /* 490×3 = 1470px wide, 686×3 = 2058px tall */
+          useCORS:         true,
+          allowTaint:      false,
+          backgroundColor: '#fdfbf6',
+          logging:         false,
+          imageTimeout:    20000,
+          width:           CARD_W,
+          height:          CARD_H,
+          x:               0,
+          y:               0,
+          scrollX:         0,
+          scrollY:         0,
+          windowWidth:     CARD_W,
+          windowHeight:    CARD_H,
+          removeContainer: true,
+          foreignObjectRendering: false,  /* FIX: more reliable cross-browser */
+        });
+      } catch (primaryErr) {
+        console.warn('html2canvas primary attempt failed:', primaryErr);
+        /* FALLBACK: lower scale, allow taint (skip CORS check) */
+        canvas = await html2canvas(clone, {
+          scale:           2,
+          useCORS:         true,
+          allowTaint:      true,         /* Fallback: allows tainted canvas */
+          backgroundColor: '#fdfbf6',
+          logging:         false,
+          imageTimeout:    12000,
+          width:           CARD_W,
+          height:          CARD_H,
+          foreignObjectRendering: false,
+        });
+        toast('Generated at lower resolution (fallback mode).', 'info');
+      }
+
+      /* Download */
+      canvas.toBlob(blob => {
+        if (!blob) { toast('Failed to create image file.', 'error'); return; }
+        const url = URL.createObjectURL(blob);
+        const a   = document.createElement('a');
+        a.download = `AIS-Greeting-${Date.now()}.png`;
+        a.href     = url;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
+        toast(`Image downloaded — ${canvas.width} × ${canvas.height} px`, 'success');
+      }, 'image/png', 1.0);
+
+    } catch (fatalErr) {
+      console.error('Image export fatal error:', fatalErr);
+      toast('Image export failed. Use "Download as PDF" instead.', 'error');
+    } finally {
+      /* Always clean up the off-screen clone */
+      if (document.body.contains(container)) {
+        document.body.removeChild(container);
+      }
+      hideLoader();
+    }
+  },
+};
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => UI.init());
+</script>
 </body>
 </html>
