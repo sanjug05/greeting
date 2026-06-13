@@ -1,223 +1,1212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIS Windows | Premium Greeting Generator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
-  </script>
-  <style>
-    :root{--gold:#c9a03d;--gold-light:#d9b84a;--gold-pale:#f3e4b5;--gold-deep:#a07c1e;--navy:#1a1a2e;--navy-mid:#252542;--white:#fff;--cream:#fdfbf6;--grey-50:#f9f9fb;--grey-100:#f2f2f5;--grey-200:#e4e4ea;--grey-400:#aaaabc;--grey-600:#6b6b82;--grey-800:#3a3a4e;--blue-link:#1a5fb4;--success:#2d8c50;--error-color:#c0392b;--shadow-card:0 40px 80px -20px rgba(0,0,0,0.40);--shadow-panel:0 20px 50px -15px rgba(0,0,0,0.22);--r-xl:32px;--r-lg:20px;--r-md:14px;--r-pill:100px;--ease:cubic-bezier(0.4,0,0.2,1);--t:0.28s}
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{font-family:'Montserrat',sans-serif;background:#07070f;min-height:100vh;color:var(--grey-800);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-    .page-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 45% at 12% 22%,rgba(201,160,61,0.08) 0%,transparent 65%),radial-gradient(ellipse 45% 40% at 88% 78%,rgba(201,160,61,0.05) 0%,transparent 60%),repeating-linear-gradient(60deg,rgba(201,160,61,0.018) 0px,rgba(201,160,61,0.018) 1px,transparent 1px,transparent 40px)}
-    .app-shell{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:48px 36px;display:grid;grid-template-columns:348px 1fr;gap:32px;align-items:start}
-    .ctrl-panel{background:rgba(255,255,255,0.99);border-radius:var(--r-xl);padding:34px 26px 28px;box-shadow:var(--shadow-panel);border:1px solid rgba(201,160,61,0.18);position:sticky;top:48px;transition:border-color var(--t) var(--ease)}
-    .ctrl-panel:hover{border-color:rgba(201,160,61,0.35)}
-    .ctrl-header{text-align:center;margin-bottom:26px}
-    .ctrl-brand{font-size:9.5px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:10px}
-    .ctrl-brand::before,.ctrl-brand::after{content:'';display:block;width:22px;height:1px;background:var(--gold);opacity:0.5}
-    .ctrl-title{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:600;color:var(--navy);line-height:1.25;margin-top:10px;letter-spacing:-0.2px}
-    .ctrl-title em{color:var(--gold-deep);font-style:normal}
-    .ctrl-divider{display:flex;align-items:center;gap:10px;margin:20px 0 24px}
-    .ctrl-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,160,61,0.3),transparent)}
-    .ctrl-divider-gem{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;opacity:0.7}
-    .form-block{margin-bottom:20px}
-    .form-lbl{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--grey-600);margin-bottom:8px}
-    .form-lbl i{color:var(--gold);font-size:10px;width:12px;text-align:center}
-    .form-ctrl{width:100%;padding:11px 16px;border:1.5px solid var(--grey-200);border-radius:var(--r-pill);font-size:13px;font-weight:500;font-family:'Montserrat',sans-serif;color:var(--navy);background:var(--white);transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease);outline:none;appearance:none;-webkit-appearance:none}
-    .form-ctrl:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,160,61,0.11)}
-    .form-ctrl.is-error{border-color:var(--error-color);box-shadow:0 0 0 3px rgba(192,57,43,0.09)}
-    .select-wrap{position:relative}
-    .select-wrap::after{content:'';position:absolute;right:16px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--gold);pointer-events:none}
-    .field-error{font-size:10.5px;color:var(--error-color);font-weight:600;margin-top:5px;padding-left:4px;display:none}
-    .field-error.show{display:block}
-    .cond-block{display:none;overflow:hidden}
-    .cond-block.show{display:block;animation:expandIn 0.32s var(--ease)}
-    @keyframes expandIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-    .tmpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    .tmpl-opt{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;aspect-ratio:5/7;border:2px solid transparent;transition:all var(--t) var(--ease);background:var(--grey-100)}
-    .tmpl-opt:hover:not(.is-selected){border-color:rgba(201,160,61,0.38);transform:translateY(-2px)}
-    .tmpl-opt.is-selected{border-color:var(--gold);box-shadow:0 4px 16px rgba(201,160,61,0.28)}
-    .tmpl-img{width:100%;height:100%;object-fit:cover;display:block}
-    .tmpl-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.72))}
-    .tmpl-label{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:8.5px;font-weight:700;color:white;letter-spacing:0.6px;text-transform:uppercase}
-    .tmpl-check{display:none;position:absolute;top:5px;right:5px;width:17px;height:17px;background:var(--gold);border-radius:50%;align-items:center;justify-content:center}
-    .tmpl-opt.is-selected .tmpl-check{display:flex}
-    .action-stack{display:flex;flex-direction:column;gap:9px;margin-top:24px;padding-top:22px;border-top:1px solid rgba(201,160,61,0.12)}
-    .btn{width:100%;padding:12px 20px;border:none;border-radius:var(--r-pill);font-family:'Montserrat',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all var(--t) var(--ease);position:relative;overflow:hidden}
-    .btn:disabled{opacity:0.42;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-    .btn:active:not(:disabled){transform:scale(0.98)!important}
-    .btn-gen{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);color:white;border:1px solid rgba(201,160,61,0.3)}
-    .btn-gen:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.28);border-color:var(--gold)}
-    .btn-pdf{background:white;color:var(--navy);border:1.5px solid var(--grey-200)}
-    .btn-pdf:hover:not(:disabled){border-color:var(--gold);background:rgba(201,160,61,0.04);transform:translateY(-1px)}
-    .btn-img{background:white;color:var(--navy);border:1.5px solid var(--grey-200)}
-    .btn-img:hover:not(:disabled){border-color:var(--gold);background:rgba(201,160,61,0.04);transform:translateY(-1px)}
-    .btn-rst{background:transparent;color:var(--grey-400);border:1px solid transparent;font-size:10.5px;padding:8px;letter-spacing:0.8px}
-    .btn-rst:hover:not(:disabled){color:var(--error-color);background:rgba(192,57,43,0.04)}
-    .ctrl-foot{margin-top:22px;text-align:center;font-size:9px;color:rgba(201,160,61,0.6);letter-spacing:1px;font-weight:600}
-    .preview-area{display:flex;flex-direction:column;gap:18px}
-    .preview-topbar{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid rgba(201,160,61,0.18);border-radius:var(--r-pill);padding:13px 22px}
-    .preview-topbar-l{font-family:'Cormorant Garamond',serif;font-size:15px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:10px}
-    .preview-topbar-l i{color:var(--gold);font-size:13px}
-    .preview-topbar-r{font-size:10px;color:rgba(255,255,255,0.28);letter-spacing:0.6px}
-    .card-stage{display:flex;justify-content:center;align-items:flex-start;padding:44px 40px;background:rgba(255,255,255,0.025);border-radius:var(--r-xl);border:1px solid rgba(255,255,255,0.05);min-height:480px;position:relative}
-    .stage-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:rgba(255,255,255,0.18);text-align:center;padding:60px 40px}
-    .stage-empty i{font-size:44px;color:rgba(201,160,61,0.18);display:block;margin-bottom:4px}
-    .stage-empty p{font-size:13px;line-height:1.7;max-width:260px}
-    .stage-empty strong{color:rgba(201,160,61,0.55)}
-    #greetingCard{width:490px;height:686px;background:var(--cream);border-radius:6px;overflow:hidden;box-shadow:var(--shadow-card);display:flex;flex-direction:column;position:relative;flex-shrink:0;animation:cardReveal 0.48s cubic-bezier(0.2,0.9,0.4,1) both}
-    @keyframes cardReveal{from{opacity:0;transform:translateY(22px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-    .ci-zone{position:relative;width:100%;height:238px;flex-shrink:0;overflow:hidden}
-    .ci-bg{width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block;transition:transform 0.6s var(--ease)}
-    #greetingCard:hover .ci-bg{transform:scale(1.03)}
-    .ci-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.10) 0%,rgba(0,0,0,0.04) 45%,rgba(0,0,0,0.52) 100%)}
-    .ci-tag{position:absolute;bottom:18px;left:26px;display:flex;align-items:center;gap:10px;font-size:8.5px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.82);font-family:'Montserrat',sans-serif}
-    .ci-tag::before{content:'';display:block;width:18px;height:1px;background:var(--gold-light);flex-shrink:0}
-    .ci-corner-tl,.ci-corner-br{position:absolute;width:22px;height:22px;z-index:5;pointer-events:none}
-    .ci-corner-tl{top:14px;left:14px;border-top:1.5px solid rgba(201,160,61,0.55);border-left:1.5px solid rgba(201,160,61,0.55)}
-    .ci-corner-br{bottom:14px;right:14px;border-bottom:1.5px solid rgba(201,160,61,0.55);border-right:1.5px solid rgba(201,160,61,0.55)}
-    .cb{flex:1;height:0;padding:18px 26px 14px;display:flex;flex-direction:column;background:var(--cream);position:relative;overflow:hidden}
-    .cb::before{content:'AIS';position:absolute;bottom:14px;right:18px;font-family:'Montserrat',sans-serif;font-size:52px;font-weight:800;color:rgba(201,160,61,0.05);letter-spacing:6px;pointer-events:none;user-select:none;line-height:1}
-    .cb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-shrink:0}
-    .cb-logo{height:55px;width:auto;object-fit:contain;max-width:155px}
-    .cb-logo-fallback{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;color:var(--gold);letter-spacing:2px;line-height:1}
-    .cb-badge{width:64px;height:64px;border-radius:50%;flex-shrink:0;position:relative;background:conic-gradient(from 0deg,#c49a2e,#e8c96a 40%,#c49a2e 55%,#a07c1e 70%,#c49a2e);box-shadow:0 4px 16px rgba(196,154,46,0.38),inset 0 1px 2px rgba(255,255,255,0.3)}
-    .cb-badge::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;border-radius:50%;border:1px solid rgba(201,160,61,0.35);pointer-events:none}
-    .cb-badge-inner{position:absolute;inset:7px;border-radius:50%;background:linear-gradient(145deg,#d4af37,#b8942e);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4px}
-    .badge-l1{font-size:9px;font-weight:800;color:var(--navy);letter-spacing:0.8px;text-transform:uppercase;font-family:'Montserrat',sans-serif;line-height:1.2;display:block}
-    .badge-l2{font-size:7.5px;font-weight:700;color:var(--navy);letter-spacing:0.3px;text-transform:uppercase;font-family:'Montserrat',sans-serif;line-height:1.25;display:block;word-break:break-word;max-width:48px;text-align:center}
-    .cb-rule{width:100%;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(201,160,61,0.3) 55%,transparent 100%);margin-bottom:9px;flex-shrink:0}
-    .cb-occ-label{font-size:8px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:6px;font-family:'Montserrat',sans-serif;flex-shrink:0}
-    .cb-dear{font-family:'Cormorant Garamond',serif;font-size:12px;font-style:italic;color:var(--grey-600);margin-bottom:2px;flex-shrink:0}
-    .cb-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--navy);line-height:1.2;letter-spacing:-0.3px;margin-bottom:9px;flex-shrink:0}
-    .cb-title .gold-span{color:var(--gold-deep)}
-    .cb-accent{width:28px;height:2px;background:var(--gold);border-radius:2px;margin-bottom:9px;flex-shrink:0}
-    .cb-msg{font-family:'Cormorant Garamond',serif;font-size:12px;font-style:italic;font-weight:400;line-height:1.72;color:var(--grey-600);border-left:2px solid rgba(201,160,61,0.38);padding-left:12px;flex:0 1 auto;overflow:hidden;margin-bottom:10px;-webkit-mask-image:linear-gradient(to bottom,black 85%,transparent 100%);mask-image:linear-gradient(to bottom,black 85%,transparent 100%)}
-    .cb-sig{border-top:1px solid rgba(201,160,61,0.22);padding-top:10px;flex-shrink:0;margin-top:auto}
-    .cb-sig-img{height:32px;width:auto;object-fit:contain;display:block;margin-bottom:5px}
-    .cb-sig-name{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:var(--navy);letter-spacing:0.4px;margin-bottom:2px}
-    .cb-sig-role{font-size:7px;font-weight:700;letter-spacing:0.9px;text-transform:uppercase;color:var(--grey-400);line-height:1.5;margin-bottom:3px}
-    .cb-sig-co{font-size:8px;font-weight:600;color:var(--blue-link);letter-spacing:0.2px}
-    .cf-bar{background:var(--navy);color:rgba(201,160,61,0.82);text-align:center;padding:10px 20px;font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-family:'Montserrat',sans-serif;flex-shrink:0}
-    .toast-wrap{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-    .toast{background:var(--navy);color:rgba(255,255,255,0.9);padding:13px 18px;border-radius:var(--r-pill);font-size:12px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 10px 32px rgba(0,0,0,0.32);border-left:3px solid var(--gold);animation:toastSlide 0.32s var(--ease);min-width:220px;pointer-events:auto}
-    .toast.is-error{border-left-color:var(--error-color)}
-    .toast.is-success{border-left-color:var(--success)}
-    .toast.is-info{border-left-color:#6694c8}
-    @keyframes toastSlide{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
-    .ld-overlay{position:fixed;inset:0;background:rgba(4,4,12,0.68);z-index:8888;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;backdrop-filter:blur(3px)}
-    .ld-overlay.show{display:flex}
-    .ld-ring{width:42px;height:42px;border:3px solid rgba(201,160,61,0.18);border-top-color:var(--gold);border-radius:50%;animation:spin 0.75s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .ld-text{color:rgba(255,255,255,0.75);font-size:11.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-    @media print{@page{size:5in 7in;margin:0}body>*{visibility:hidden!important}body>#printMount,body>#printMount *{visibility:visible!important}#printMount{position:fixed!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important}#greetingCard{width:5in!important;height:7in!important;border-radius:0!important;box-shadow:none!important;animation:none!important;overflow:hidden!important}.ci-zone{height:2.38in!important}.cb{padding:0.2in 0.3in 0.15in!important}.cb::before{display:none!important}.cf-bar{padding:0.1in 0.2in!important}.page-bg,.app-shell,.ld-overlay,.toast-wrap{display:none!important}}
-    @media(max-width:1080px){.app-shell{grid-template-columns:1fr;padding:24px 18px}.ctrl-panel{position:relative;top:0}#greetingCard{width:100%;max-width:490px}.card-stage{padding:28px 18px}}
-    @media(max-width:560px){#greetingCard{max-width:340px;height:476px}.cb-title{font-size:20px}.ci-zone{height:166px}.cb{padding:14px 18px 12px}.cb-badge{width:54px;height:54px}.badge-l1{font-size:8px}.badge-l2{font-size:6.5px;max-width:38px}.cb-logo{height:36px}.cb-msg{font-size:11px}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>AIS Windows | Premium Greeting Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--gold:#c9a03d;--gold-light:#d9b84a;--gold-deep:#a07c1e;--navy:#1a1a2e;--navy-mid:#252542;--cream:#fdfbf6;--white:#fff;--g100:#f2f2f5;--g200:#e4e4ea;--g400:#aaaabc;--g600:#6b6b82;--g800:#3a3a4e;--blue:#1a5fb4;--success:#2d8c50;--err:#c0392b;--sh-card:0 48px 96px -24px rgba(0,0,0,.55),0 12px 36px -8px rgba(0,0,0,.22);--sh-panel:0 20px 50px -15px rgba(0,0,0,.22);--r-xl:28px;--r-pill:100px;--ease:cubic-bezier(.4,0,.2,1);--t:.28s}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:#07070f;min-height:100vh;color:var(--g800);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.page-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 50% at 10% 20%,rgba(201,160,61,.09) 0%,transparent 65%),radial-gradient(ellipse 45% 40% at 90% 80%,rgba(201,160,61,.06) 0%,transparent 60%),repeating-linear-gradient(60deg,rgba(201,160,61,.016) 0px,rgba(201,160,61,.016) 1px,transparent 1px,transparent 42px)}
+.app-shell{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:48px 36px;display:grid;grid-template-columns:372px 1fr;gap:32px;align-items:start}
+.ctrl-panel{background:rgba(255,255,255,.995);border-radius:var(--r-xl);padding:28px 20px 22px;box-shadow:var(--sh-panel);border:1px solid rgba(201,160,61,.18);position:sticky;top:48px;max-height:calc(100vh - 80px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(201,160,61,.3) transparent;transition:border-color var(--t)}
+.ctrl-panel:hover{border-color:rgba(201,160,61,.35)}
+.ctrl-panel::-webkit-scrollbar{width:3px}
+.ctrl-panel::-webkit-scrollbar-thumb{background:rgba(201,160,61,.3);border-radius:3px}
+.ctrl-header{text-align:center;margin-bottom:18px}
+.ctrl-brand{font-size:8px;font-weight:700;letter-spacing:4.5px;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:10px}
+.ctrl-brand::before,.ctrl-brand::after{content:'';display:block;width:18px;height:1px;background:var(--gold);opacity:.5}
+.ctrl-title{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:var(--navy);line-height:1.25;margin-top:7px}
+.ctrl-title em{color:var(--gold-deep);font-style:normal}
+.ctrl-divider{display:flex;align-items:center;gap:10px;margin:14px 0 16px}
+.ctrl-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,160,61,.3),transparent)}
+.ctrl-divider-gem{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;opacity:.7}
+.form-block{margin-bottom:13px}
+.form-lbl{display:flex;align-items:center;gap:6px;font-size:8.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);margin-bottom:6px}
+.form-lbl i{color:var(--gold);font-size:9px;width:11px;text-align:center}
+.form-ctrl{width:100%;padding:9px 14px;border:1.5px solid var(--g200);border-radius:var(--r-pill);font-size:12px;font-weight:500;font-family:'Montserrat',sans-serif;color:var(--navy);background:var(--white);transition:border-color var(--t),box-shadow var(--t);outline:none;appearance:none;-webkit-appearance:none}
+.form-ctrl:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,160,61,.1)}
+.form-ctrl.is-error{border-color:var(--err);box-shadow:0 0 0 3px rgba(192,57,43,.09)}
+.select-wrap{position:relative}
+.select-wrap::after{content:'';position:absolute;right:14px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--gold);pointer-events:none}
+.form-textarea{width:100%;padding:9px 13px;border:1.5px solid var(--g200);border-radius:13px;font-size:11.5px;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--g800);background:#f9f9fb;transition:border-color var(--t),box-shadow var(--t);outline:none;resize:vertical;min-height:78px;line-height:1.75}
+.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,160,61,.1);background:white}
+.form-textarea::placeholder{color:var(--g400);font-style:italic}
+.field-error{font-size:9.5px;color:var(--err);font-weight:600;margin-top:4px;padding-left:4px;display:none}
+.field-error.show{display:block}
+.cond-block{display:none}
+.cond-block.show{display:block;animation:expandIn .3s var(--ease)}
+@keyframes expandIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.tmpl-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.tmpl-opt{position:relative;border-radius:8px;overflow:hidden;cursor:pointer;aspect-ratio:5/7;border:2px solid transparent;transition:border-color var(--t),transform var(--t);background:var(--g100)}
+.tmpl-opt:hover:not(.is-selected){border-color:rgba(201,160,61,.42);transform:translateY(-2px)}
+.tmpl-opt.is-selected{border-color:var(--gold);box-shadow:0 3px 12px rgba(201,160,61,.28)}
+.tmpl-img{width:100%;height:100%;object-fit:cover;display:block}
+.tmpl-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 25%,rgba(0,0,0,.75))}
+.tmpl-label{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:6.5px;font-weight:700;color:white;text-transform:uppercase}
+.tmpl-check{display:none;position:absolute;top:4px;right:4px;width:14px;height:14px;background:var(--gold);border-radius:50%;align-items:center;justify-content:center}
+.tmpl-opt.is-selected .tmpl-check{display:flex}
+.layout-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.layout-opt{padding:9px 5px;border-radius:9px;cursor:pointer;text-align:center;border:1.5px solid var(--g200);transition:all var(--t);background:white}
+.layout-opt:hover:not(.is-selected){border-color:rgba(201,160,61,.38)}
+.layout-opt.is-selected{border-color:var(--gold);background:rgba(201,160,61,.06);box-shadow:0 2px 8px rgba(201,160,61,.16)}
+.layout-opt i{font-size:16px;color:var(--g400);display:block;margin-bottom:4px}
+.layout-opt.is-selected i{color:var(--gold)}
+.layout-opt-label{font-size:8px;font-weight:700;text-transform:uppercase;color:var(--g600)}
+.layout-opt.is-selected .layout-opt-label{color:var(--gold-deep)}
+.theme-swatches{display:flex;gap:9px}
+.theme-swatch{flex:1;height:32px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:transform var(--t),box-shadow var(--t);position:relative;overflow:hidden}
+.theme-swatch:hover{transform:scale(1.07)}
+.theme-swatch.is-selected{box-shadow:0 2px 10px rgba(201,160,61,.32)}
+.theme-swatch.is-selected::after{content:'\2713';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.sw-cream{background:linear-gradient(135deg,#fdfbf6,#e8d5a3);border-color:rgba(201,160,61,.35)!important}
+.sw-midnight{background:linear-gradient(135deg,#0f1628,#1a2a4a)}
+.sw-emerald{background:linear-gradient(135deg,#0d2116,#1a4030)}
+.sw-rosegold{background:linear-gradient(135deg,#fdf5f5,#d4906a);border-color:rgba(212,140,100,.3)!important}
+.tone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-bottom:9px}
+.tone-opt{padding:7px;border-radius:7px;cursor:pointer;text-align:center;border:1.5px solid var(--g200);transition:all var(--t);background:white;font-size:9px;font-weight:700;color:var(--g600)}
+.tone-opt:hover:not(.is-selected){border-color:rgba(201,160,61,.38)}
+.tone-opt.is-selected{border-color:var(--gold);background:rgba(201,160,61,.06);color:var(--gold-deep)}
+.ai-area{background:linear-gradient(135deg,rgba(74,26,124,.05),rgba(74,26,124,.02));border:1.5px solid rgba(74,26,124,.15);border-radius:13px;padding:11px 13px;margin-bottom:7px}
+.ai-area-title{font-size:8.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(74,26,124,.8);margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.action-stack{display:flex;flex-direction:column;gap:7px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(201,160,61,.12)}
+.btn{width:100%;padding:11px 16px;border:none;border-radius:var(--r-pill);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all var(--t)}
+.btn:disabled{opacity:.36;cursor:not-allowed!important;transform:none!important;box-shadow:none!important}
+.btn:active:not(:disabled){transform:scale(.975)!important}
+.btn-gen{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:white;border:1px solid rgba(201,160,61,.3)}
+.btn-gen:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.28);border-color:var(--gold)}
+.btn-ai{background:linear-gradient(135deg,#4a1a7c,#6b2ba8);color:white;border:1px solid rgba(140,80,200,.3);position:relative;overflow:hidden}
+.btn-ai:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 22px rgba(74,26,124,.32)}
+.btn-ai .btn-text{display:flex;align-items:center;gap:7px;transition:opacity .18s}
+.btn-ai.loading .btn-text{opacity:0}
+.btn-ai .btn-spinner{position:absolute;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.btn-ai.loading .btn-spinner{display:block}
+.btn-sec{background:white;color:var(--navy);border:1.5px solid var(--g200)}
+.btn-sec:hover:not(:disabled){border-color:var(--gold);background:rgba(201,160,61,.04);transform:translateY(-1px)}
+.btn-rst{background:transparent;color:var(--g400);border:1px solid transparent;font-size:9px;padding:6px;letter-spacing:.8px}
+.btn-rst:hover:not(:disabled){color:var(--err);background:rgba(192,57,43,.04)}
+.ctrl-foot{margin-top:16px;text-align:center;font-size:8px;color:rgba(201,160,61,.55);letter-spacing:1.2px;font-weight:600}
+.preview-area{display:flex;flex-direction:column;gap:14px}
+.preview-topbar{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.04);border:1px solid rgba(201,160,61,.18);border-radius:var(--r-pill);padding:11px 20px}
+.preview-topbar-l{font-family:'Cormorant Garamond',serif;font-size:14px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:9px}
+.preview-topbar-l i{color:var(--gold);font-size:12px}
+.preview-topbar-r{font-size:8.5px;color:rgba(255,255,255,.25)}
+.card-stage{display:flex;justify-content:center;align-items:flex-start;padding:40px 36px;background:rgba(255,255,255,.018);border-radius:var(--r-xl);border:1px solid rgba(255,255,255,.05);min-height:500px;position:relative}
+.stage-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:rgba(255,255,255,.18);text-align:center;padding:60px 40px;width:100%}
+.empty-ring{width:68px;height:68px;border-radius:50%;border:1px solid rgba(201,160,61,.18);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+.empty-ring i{font-size:26px;color:rgba(201,160,61,.22)}
+.stage-empty p{font-size:12px;line-height:1.8;max-width:220px}
+.stage-empty strong{color:rgba(201,160,61,.6)}
+#greetingCard{width:490px;height:686px;border-radius:6px;overflow:hidden;box-shadow:var(--sh-card);position:relative;flex-shrink:0;animation:cardReveal .5s cubic-bezier(.2,.9,.4,1) both;display:flex;flex-direction:column}
+@keyframes cardReveal{from{opacity:0;transform:translateY(22px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card-frame{position:absolute;inset:10px;pointer-events:none;border:1px solid rgba(201,160,61,.22);border-radius:2px;z-index:20}
+.cb-badge{width:62px;height:62px;border-radius:50%;flex-shrink:0;position:relative}
+.cb-badge-outer{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#c49a2e,#e8c96a 22%,#d4af37 38%,#c49a2e 52%,#a07c1e 68%,#c49a2e 82%,#e8c96a 100%);box-shadow:0 4px 16px rgba(196,154,46,.4)}
+.cb-badge-ring{position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(255,255,255,.28)}
+.cb-badge-inner{position:absolute;inset:8px;border-radius:50%;background:linear-gradient(145deg,#d4af37,#b8942e);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3px}
+.badge-l1{font-size:8px;font-weight:800;color:var(--navy);letter-spacing:.4px;text-transform:uppercase;font-family:'Montserrat',sans-serif;line-height:1.25;display:block}
+.badge-l2{font-size:6.5px;font-weight:700;color:var(--navy);text-transform:uppercase;font-family:'Montserrat',sans-serif;line-height:1.3;display:block;word-break:break-word;max-width:44px;text-align:center}
+.cb-rule{width:100%;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(201,160,61,.3) 55%,transparent 100%);margin-bottom:6px;flex-shrink:0}
+.cb-ornament{display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-shrink:0;font-size:9px;color:var(--gold);letter-spacing:4px}
+.cb-ornament::before,.cb-ornament::after{content:'';flex:1;height:1px;background:rgba(201,160,61,.2)}
+.cb-occ-label{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:4px;font-family:'Montserrat',sans-serif;flex-shrink:0}
+.cb-dear{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--g600);margin:6px 0 6px;flex-shrink:0}
+.cb-title{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:700;color:var(--navy);line-height:1.18;letter-spacing:-.3px;margin-bottom:5px;flex-shrink:0}
+.cb-title .gs{background:linear-gradient(135deg,#c49a2e,#d4af37,#e8c96a,#a07c1e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cb-accent{display:flex;align-items:center;gap:5px;margin-bottom:5px;flex-shrink:0}
+.cb-accent-bar{width:28px;height:2px;background:var(--gold);border-radius:2px}
+.cb-accent-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.42}
+.cb-msg{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;line-height:1.72;color:var(--g600);border-left:2px solid rgba(201,160,61,.35);padding-left:11px;flex:0 1 auto;overflow:hidden;margin-bottom:5px;-webkit-mask-image:linear-gradient(to bottom,black 82%,transparent 100%);mask-image:linear-gradient(to bottom,black 82%,transparent 100%)}
+.cb-sig{border-top:1px solid rgba(201,160,61,.18);padding-top:7px;flex-shrink:0;margin-top:auto}
+.cb-sig-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.cb-sig-role{font-size:7.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--g400);line-height:1.5;margin-bottom:2px}
+.cb-sig-co{font-size:8.5px;font-weight:600;color:var(--blue)}
+.cf-bar{position:absolute;left:0;right:0;bottom:0;height:30px;z-index:14;background:var(--navy);color:rgba(201,160,61,.82);text-align:center;padding:0 16px;font-size:7px;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-family:'Montserrat',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px}
+.cf-gem{opacity:.38}
+.layout-classic{background:var(--cream)}
+.layout-classic .ci-zone{width:100%;height:265px;flex-shrink:0;overflow:hidden;position:relative}
+.layout-classic .ci-bg{width:100%;height:100%;object-fit:cover;object-position:center 38%;display:block;transition:transform .8s var(--ease)}
+#greetingCard.layout-classic:hover .ci-bg{transform:scale(1.04)}
+.layout-classic .ci-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.06) 0%,rgba(0,0,0,.01) 35%,rgba(0,0,0,.6) 100%)}
+.layout-classic .ci-tag{position:absolute;bottom:14px;left:22px;display:flex;align-items:center;gap:9px;font-size:7.5px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.82);font-family:'Montserrat',sans-serif}
+.layout-classic .ci-tag::before{content:'';display:block;width:16px;height:1px;background:var(--gold-light);flex-shrink:0}
+.ci-corner{position:absolute;pointer-events:none;z-index:5}
+.ci-corner-tl{top:11px;left:11px}
+.ci-corner-tr{top:11px;right:11px;transform:scaleX(-1)}
+.ci-corner-br{bottom:11px;right:11px;transform:scale(-1,-1)}
+.layout-classic .cb{flex:1;min-height:0;padding:13px 22px 44px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.layout-classic .cb::before{content:'AIS';position:absolute;bottom:6px;right:12px;font-family:'Montserrat',sans-serif;font-size:58px;font-weight:800;color:rgba(201,160,61,.04);letter-spacing:8px;pointer-events:none;user-select:none;line-height:1}
+.layout-classic .cb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-shrink:0}
+.layout-fullbleed{background:#08080e;position:relative}
+.layout-fullbleed .fb-bg{position:absolute;inset:0;overflow:hidden}
+.layout-fullbleed .fb-bg img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--ease)}
+#greetingCard.layout-fullbleed:hover .fb-bg img{transform:scale(1.04)}
+.layout-fullbleed .fb-gradient{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,5,18,.2) 0%,rgba(5,5,18,.1) 20%,rgba(5,5,18,.45) 50%,rgba(5,5,18,.89) 75%,rgba(5,5,18,.97) 100%)}
+.layout-fullbleed .fb-content{position:relative;z-index:10;display:flex;flex-direction:column;height:100%;padding:18px 24px 44px}
+.layout-fullbleed .fb-top{display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;margin-bottom:auto}
+.layout-fullbleed .fb-body{flex-shrink:0;padding-bottom:2px}
+.layout-fullbleed .cb-title{color:white;font-size:28px}
+.layout-fullbleed .cb-title .gs{background:linear-gradient(135deg,#e8c96a,#d4af37,#c49a2e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.layout-fullbleed .cb-dear{color:rgba(255,255,255,.56)}
+.layout-fullbleed .cb-occ-label{color:rgba(201,160,61,.9)}
+.layout-fullbleed .cb-msg{color:rgba(255,255,255,.68);border-left-color:rgba(201,160,61,.48);-webkit-mask-image:none;mask-image:none}
+.layout-fullbleed .cb-rule{background:linear-gradient(90deg,rgba(201,160,61,.7),rgba(201,160,61,.2) 55%,transparent)}
+.layout-fullbleed .cb-sig{border-top-color:rgba(201,160,61,.2)}
+.layout-fullbleed .cb-sig-name{color:rgba(255,255,255,.9)}
+.layout-fullbleed .cb-sig-role{color:rgba(255,255,255,.36)}
+.layout-fullbleed .cb-sig-co{color:rgba(160,200,255,.82)}
+.layout-fullbleed .cf-bar{background:rgba(6,6,16,.94)}
+.layout-fullbleed .cb-ornament{color:rgba(201,160,61,.8)}
+.layout-fullbleed .cb-ornament::before,.layout-fullbleed .cb-ornament::after{background:rgba(201,160,61,.18)}
+.layout-minimal{position:relative}
+.layout-minimal .mn-bg{position:absolute;inset:0}
+.layout-minimal.theme-cream .mn-bg{background:linear-gradient(152deg,#fdfbf6,#f4edd5)}
+.layout-minimal.theme-midnight .mn-bg{background:linear-gradient(152deg,#0f1628,#1a2a4a)}
+.layout-minimal.theme-emerald .mn-bg{background:linear-gradient(152deg,#0d2116,#162e20)}
+.layout-minimal.theme-rosegold .mn-bg{background:linear-gradient(152deg,#fdf8f6,#f5e0d5)}
+.layout-minimal .mn-pattern{position:absolute;inset:0;opacity:.6;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12 1L23 12L12 23L1 12Z' fill='none' stroke='rgba(201,160,61,0.08)' stroke-width='0.5'/%3E%3C/svg%3E");background-size:24px 24px}
+.layout-minimal .mn-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;padding:20px 24px 44px}
+.layout-minimal .mn-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-shrink:0}
+.layout-minimal .mn-emblem{width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,160,61,.26);display:flex;align-items:center;justify-content:center;position:relative;margin:0 auto 12px;flex-shrink:0}
+.layout-minimal .mn-emblem::before{content:'';position:absolute;inset:6px;border-radius:50%;border:1px dashed rgba(201,160,61,.16)}
+.layout-minimal .mn-emblem-icon{font-size:30px;position:relative;z-index:1}
+.layout-minimal .mn-divider{display:flex;align-items:center;gap:7px;margin:8px 0;flex-shrink:0}
+.layout-minimal .mn-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,160,61,.3),transparent)}
+.layout-minimal .mn-divider-gem{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);opacity:.6}
+.layout-minimal .cb-title,.layout-minimal .cb-occ-label,.layout-minimal .cb-dear{text-align:center}
+.layout-minimal .cb-accent{justify-content:center}
+.layout-minimal .cb-msg{border-left:none;padding-left:0;text-align:center;border-top:1px solid rgba(201,160,61,.16);padding-top:9px;-webkit-mask-image:none;mask-image:none}
+.layout-minimal .cb-sig{text-align:center}
+.layout-minimal .cb-sig-svg{margin:0 auto 3px;display:block}
+.layout-classic.theme-midnight,.layout-classic.theme-midnight .cb{background:#0f1628}
+.layout-classic.theme-midnight .cb-title{color:#f0ead6}
+.layout-classic.theme-midnight .cb-dear{color:rgba(190,210,240,.62)}
+.layout-classic.theme-midnight .cb-msg{color:rgba(190,210,240,.58)}
+.layout-classic.theme-midnight .cb-sig-name{color:#f0ead6}
+.layout-classic.theme-midnight .cb-sig-role{color:rgba(190,210,240,.35)}
+.layout-classic.theme-midnight .cb-sig-co{color:rgba(160,195,255,.8)}
+.layout-classic.theme-midnight .cf-bar{background:#070d1c}
+.layout-classic.theme-emerald,.layout-classic.theme-emerald .cb{background:#0d2116}
+.layout-classic.theme-emerald .cb-title{color:#f5f0e8}
+.layout-classic.theme-emerald .cb-dear{color:rgba(200,235,215,.62)}
+.layout-classic.theme-emerald .cb-msg{color:rgba(200,235,215,.56)}
+.layout-classic.theme-emerald .cb-sig-name{color:#f5f0e8}
+.layout-classic.theme-emerald .cb-sig-role{color:rgba(180,220,200,.38)}
+.layout-classic.theme-emerald .cb-sig-co{color:rgba(150,215,200,.85)}
+.layout-classic.theme-emerald .cf-bar{background:#061008}
+.layout-classic.theme-rosegold,.layout-classic.theme-rosegold .cb{background:#fdf8f6}
+.layout-classic.theme-rosegold .cb-title{color:#2a1510}
+.layout-classic.theme-rosegold .cb-dear{color:#7a5550}
+.layout-classic.theme-rosegold .cb-msg{color:#7a5550;border-left-color:rgba(200,100,90,.3)}
+.layout-classic.theme-rosegold .cb-occ-label{color:#a04040}
+.layout-classic.theme-rosegold .cb-title .gs{background:linear-gradient(135deg,#c96070,#d4967a,#b05040);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.layout-classic.theme-rosegold .cb-rule{background:linear-gradient(90deg,#c96070,rgba(200,120,100,.28) 55%,transparent)}
+.layout-classic.theme-rosegold .cb-accent-bar{background:#c96070}
+.layout-classic.theme-rosegold .cb-accent-dot{background:#c96070}
+.layout-classic.theme-rosegold .cb-badge-outer{background:conic-gradient(from 0deg,#c96070,#e8a0aa 22%,#d47090 38%,#c96070 52%,#a04060 68%,#c96070)}
+.layout-classic.theme-rosegold .cb-badge-inner{background:linear-gradient(145deg,#d47090,#b85070)}
+.layout-classic.theme-rosegold .cf-bar{background:#2a1510;color:rgba(210,140,130,.82)}
+.layout-minimal.theme-midnight .cb-title,.layout-minimal.theme-emerald .cb-title{color:#f0ead6}
+.layout-minimal.theme-midnight .cb-dear,.layout-minimal.theme-emerald .cb-dear{color:rgba(200,220,240,.58)}
+.layout-minimal.theme-midnight .cb-msg,.layout-minimal.theme-emerald .cb-msg{color:rgba(200,220,240,.56);border-top-color:rgba(201,160,61,.18)}
+.layout-minimal.theme-midnight .cb-sig-name,.layout-minimal.theme-emerald .cb-sig-name{color:#f0ead6}
+.layout-minimal.theme-midnight .cb-sig-role,.layout-minimal.theme-emerald .cb-sig-role{color:rgba(200,220,240,.33)}
+.layout-minimal.theme-midnight .cb-sig-co{color:rgba(160,195,255,.8)}
+.layout-minimal.theme-emerald .cb-sig-co{color:rgba(150,215,200,.85)}
+.layout-minimal.theme-midnight .cf-bar{background:#070d1c}
+.layout-minimal.theme-emerald .cf-bar{background:#061008}
+.layout-minimal.theme-rosegold .cb-occ-label{color:#a04040}
+.layout-minimal.theme-rosegold .cb-title{color:#2a1510}
+.layout-minimal.theme-rosegold .cb-dear{color:#7a5550}
+.layout-minimal.theme-rosegold .cb-msg{color:#7a5550;border-top-color:rgba(200,100,90,.18)}
+.layout-minimal.theme-rosegold .cb-sig-name{color:#2a1510}
+.layout-minimal.theme-rosegold .cf-bar{background:#2a1510;color:rgba(210,140,130,.82)}
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none;max-width:300px}
+.toast{background:var(--navy);color:rgba(255,255,255,.9);padding:11px 15px;border-radius:var(--r-pill);font-size:11px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(0,0,0,.3);border-left:3px solid var(--gold);animation:toastIn .3s var(--ease);pointer-events:auto;cursor:pointer}
+.toast.is-error{border-left-color:var(--err)}
+.toast.is-success{border-left-color:var(--success)}
+.toast.is-info{border-left-color:#5a88cc}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.ld-overlay{position:fixed;inset:0;background:rgba(4,4,12,.7);z-index:8888;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(3px)}
+.ld-overlay.show{display:flex}
+.ld-ring{width:40px;height:40px;border:3px solid rgba(201,160,61,.18);border-top-color:var(--gold);border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-text{color:rgba(255,255,255,.72);font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+@media(max-width:1100px){.app-shell{grid-template-columns:310px 1fr;padding:26px 16px}}
+@media(max-width:880px){.app-shell{grid-template-columns:1fr;padding:14px;gap:12px}.ctrl-panel{position:relative;top:0;max-height:none;order:2}.preview-area{order:1}.card-stage{padding:22px 14px}}
+@media(max-width:560px){.app-shell{padding:8px;gap:8px}.card-stage{padding:12px 6px;min-height:auto}.toast-wrap{bottom:10px;right:10px}}
+
+/* Logo & Signature image handling */
+.card-logo{height:56px;width:auto;object-fit:contain;max-width:180px;display:block}
+.layout-classic .card-logo{height:56px}
+.layout-fullbleed .card-logo{height:44px;filter:brightness(0) invert(1) opacity(.88)}
+.layout-minimal .card-logo{height:48px}
+.layout-classic.theme-midnight .card-logo,
+.layout-classic.theme-emerald .card-logo,
+.layout-minimal.theme-midnight .card-logo,
+.layout-minimal.theme-emerald .card-logo{filter:brightness(0) invert(1) opacity(.85)}
+.cb-sig-img{height:32px;width:auto;object-fit:contain;display:block;margin-bottom:3px}
+.layout-minimal .cb-sig-img{margin:0 auto 3px}
+.layout-fullbleed .cb-sig-img,
+.layout-classic.theme-midnight .cb-sig-img,
+.layout-classic.theme-emerald .cb-sig-img,
+.layout-minimal.theme-midnight .cb-sig-img,
+.layout-minimal.theme-emerald .cb-sig-img{filter:brightness(0) invert(1) opacity(.82)}
+
+/* Asset Upload UI */
+.asset-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px}
+.asset-upload-box{border:1.5px dashed var(--g200);border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;transition:all var(--t);background:var(--g100);position:relative;overflow:hidden}
+.asset-upload-box:hover{border-color:var(--gold);background:rgba(201,160,61,.04)}
+.asset-upload-box.has-file{border-color:var(--success);border-style:solid;background:rgba(45,140,80,.04)}
+.asset-upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.asset-upload-icon{font-size:18px;margin-bottom:4px;display:block;line-height:1}
+.asset-upload-label{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--g600);display:block;line-height:1.4}
+.asset-upload-box.has-file .asset-upload-label{color:var(--success)}
+.asset-upload-status{font-size:7.5px;color:var(--g400);margin-top:2px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.asset-upload-box.has-file .asset-upload-status{color:var(--success)}
+.asset-preview{width:100%;max-height:36px;object-fit:contain;display:none;margin-top:5px;border-radius:4px}
+.asset-upload-box.has-file .asset-preview{display:block}
+.asset-upload-box.has-file .asset-upload-icon{display:none}
+
+/* NEW: optional firm / company line on the card */
+.cb-firm{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:5px;flex-shrink:0;line-height:1.4}
+.layout-minimal .cb-firm{text-align:center}
+.layout-fullbleed .cb-firm,.layout-classic.theme-midnight .cb-firm,.layout-classic.theme-emerald .cb-firm,.layout-minimal.theme-midnight .cb-firm,.layout-minimal.theme-emerald .cb-firm{color:var(--gold-light)}
+.layout-classic.theme-rosegold .cb-firm,.layout-minimal.theme-rosegold .cb-firm{color:#a04040}
+
+/* NEW: two-up button rows + copy/share accents */
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.btn-copy{background:linear-gradient(135deg,#1a5fb4,#2176d6);color:#fff;border:1px solid rgba(40,110,200,.3)}
+.btn-copy:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 22px rgba(26,95,180,.3)}
+.btn-share{background:linear-gradient(135deg,#1f9d55,#27ae60);color:#fff;border:1px solid rgba(30,160,90,.3)}
+.btn-share:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 22px rgba(39,174,96,.3)}
+.lbl-opt{font-weight:400;letter-spacing:0;text-transform:none;font-size:8.5px;color:var(--g400)}
+
+/* NEW: fixed (non-editable) signatory display */
+.sig-fixed{display:flex;flex-direction:column;gap:2px;padding:10px 14px;border:1.5px solid var(--g200);border-radius:13px;background:var(--g100)}
+.sig-fixed-name{font-size:12.5px;font-weight:700;color:var(--navy)}
+.sig-fixed-role{font-size:8px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--g400)}
+
+/* NEW: full-width tool footer line */
+.page-foot{grid-column:1 / -1;text-align:center;padding:20px 12px 6px;font-size:9.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(201,160,61,.55)}
+.page-foot .heart{color:#e0245e;font-size:11px;letter-spacing:0}
+</style>
 </head>
 <body>
-<div class="page-bg" aria-hidden="true"></div>
+<div class="page-bg"></div>
 <div class="app-shell">
-  <aside class="ctrl-panel" aria-label="Card controls">
-    <div class="ctrl-header"><div class="ctrl-brand">AIS Windows</div><h1 class="ctrl-title">Luxury <em>Greeting</em><br>Generator</h1></div>
+  <aside class="ctrl-panel">
+    <div class="ctrl-header">
+      <div class="ctrl-brand">AIS Windows</div>
+      <h1 class="ctrl-title">Premium <em>Greeting</em><br>Generator</h1>
+    </div>
     <div class="ctrl-divider"><div class="ctrl-divider-line"></div><div class="ctrl-divider-gem"></div><div class="ctrl-divider-line"></div></div>
-    <div class="form-block"><label class="form-lbl" for="fOccasion"><i class="fas fa-gift"></i> Occasion</label><div class="select-wrap"><select class="form-ctrl" id="fOccasion"><option value="birthday">🎂 Birthday Celebration</option><option value="marriage">💍 Wedding Anniversary</option><option value="showroom">🏢 Showroom Anniversary</option></select></div></div>
-    <div class="form-block"><label class="form-lbl"><i class="fas fa-swatchbook"></i> Template Style</label><div class="tmpl-grid" id="tmplGrid"></div></div>
-    <div class="form-block"><label class="form-lbl" for="fName"><i class="fas fa-user-tie"></i> Recipient Name</label><input type="text" class="form-ctrl" id="fName" placeholder="e.g. Mr. Arpit Sharma" value="Mr. Arpit Sharma"><div class="field-error" id="errName">Please enter the recipient's name.</div></div>
-    <div class="cond-block" id="condShowroom"><div class="form-block"><label class="form-lbl" for="fShowroom"><i class="fas fa-store"></i> Showroom Name</label><input type="text" class="form-ctrl" id="fShowroom" placeholder="e.g. Pune Flagship" value="Pune Flagship"><div class="field-error" id="errShowroom">Please enter the showroom name.</div></div><div class="form-block"><label class="form-lbl" for="fYear"><i class="fas fa-hashtag"></i> Anniversary Year No.</label><input type="number" class="form-ctrl" id="fYear" min="1" max="99" value="5" style="border-radius:var(--r-pill)"></div></div>
-    <div class="action-stack"><button class="btn btn-gen" id="btnGenerate"><i class="fas fa-magic"></i> Generate Card</button><button class="btn btn-pdf" id="btnPdf" disabled><i class="fas fa-file-pdf"></i> Download as PDF</button><button class="btn btn-img" id="btnImg" disabled><i class="fas fa-image"></i> Download as Image</button><button class="btn btn-rst" id="btnReset"><i class="fas fa-undo"></i> Reset Form</button></div>
-    <div class="ctrl-foot"><i class="fas fa-shield-alt" style="margin-right:5px"></i>Premium Edition · Est. 1987</div>
+    <div class="form-block">
+      <label class="form-lbl" for="fOccasion"><i class="fas fa-gift"></i> Occasion</label>
+      <div class="select-wrap">
+        <select class="form-ctrl" id="fOccasion">
+          <option value="birthday">&#127874; Birthday Celebration</option>
+          <option value="marriage">&#128141; Wedding Anniversary</option>
+          <option value="showroom">&#127970; Showroom Anniversary</option>
+          <option value="diwali">&#129677; Diwali / Deepawali</option>
+          <option value="newyear">&#127878; New Year Wishes</option>
+          <option value="holi">&#127912; Holi Greetings</option>
+          <option value="workanniversary">&#127942; Work Anniversary</option>
+          <option value="thankyou">&#128591; Thank You</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-block">
+      <label class="form-lbl"><i class="fas fa-swatchbook"></i> Template Style</label>
+      <div class="tmpl-grid" id="tmplGrid"></div>
+    </div>
+    <div class="form-block">
+      <label class="form-lbl"><i class="fas fa-layer-group"></i> Card Layout</label>
+      <div class="layout-grid">
+        <div class="layout-opt is-selected" data-layout="classic"><i class="fas fa-image"></i><span class="layout-opt-label">Classic</span></div>
+        <div class="layout-opt" data-layout="fullbleed"><i class="fas fa-expand"></i><span class="layout-opt-label">Full Bleed</span></div>
+        <div class="layout-opt" data-layout="minimal"><i class="fas fa-feather-alt"></i><span class="layout-opt-label">Minimal</span></div>
+      </div>
+    </div>
+    <div class="form-block">
+      <label class="form-lbl"><i class="fas fa-palette"></i> Colour Theme</label>
+      <div class="theme-swatches">
+        <div class="theme-swatch sw-cream is-selected" data-theme="cream" title="Gold &amp; Cream"></div>
+        <div class="theme-swatch sw-midnight" data-theme="midnight" title="Midnight Navy"></div>
+        <div class="theme-swatch sw-emerald" data-theme="emerald" title="Emerald Prestige"></div>
+        <div class="theme-swatch sw-rosegold" data-theme="rosegold" title="Rose Gold"></div>
+      </div>
+    </div>
+    <div class="form-block">
+      <label class="form-lbl" for="fName"><i class="fas fa-user-tie"></i> Recipient Name</label>
+      <input type="text" class="form-ctrl" id="fName" placeholder="e.g. Mr. Arpit Sharma" value="Mr. Arpit Sharma">
+      <div class="field-error" id="errName">Please enter the recipient&#39;s name.</div>
+    </div>
+    <div class="form-block">
+      <label class="form-lbl" for="fFirm"><i class="fas fa-building"></i> Firm / Company <span class="lbl-opt">(optional)</span></label>
+      <input type="text" class="form-ctrl" id="fFirm" placeholder="e.g. M/s Sharma Glass &amp; Ply">
+    </div>
+    <div class="form-block">
+      <label class="form-lbl"><i class="fas fa-image"></i> Logo &amp; Signature</label>
+      <div class="asset-upload-row">
+        <div class="asset-upload-box" id="logoUploadBox">
+          <input type="file" id="logoFileInput" accept="image/png,image/jpeg,image/svg+xml" title="Upload logo.png">
+          <span class="asset-upload-icon">&#128444;</span>
+          <span class="asset-upload-label">Logo</span>
+          <span class="asset-upload-status" id="logoStatus">logo.png</span>
+          <img class="asset-preview" id="logoPreview" alt="Logo preview">
+        </div>
+        <div class="asset-upload-box" id="sigUploadBox">
+          <input type="file" id="sigFileInput" accept="image/png,image/jpeg,image/svg+xml" title="Upload signature.png">
+          <span class="asset-upload-icon">&#9998;</span>
+          <span class="asset-upload-label">Signature</span>
+          <span class="asset-upload-status" id="sigStatus">signature.png</span>
+          <img class="asset-preview" id="sigPreview" alt="Signature preview">
+        </div>
+      </div>
+    </div>
+    <div class="cond-block" id="condShowroom">
+      <div class="form-block">
+        <label class="form-lbl" for="fShowroom"><i class="fas fa-store"></i> Showroom Name</label>
+        <input type="text" class="form-ctrl" id="fShowroom" placeholder="e.g. Pune Flagship" value="Pune Flagship">
+        <div class="field-error" id="errShowroom">Please enter the showroom name.</div>
+      </div>
+      <div class="form-block">
+        <label class="form-lbl" for="fYear"><i class="fas fa-hashtag"></i> Anniversary Year No.</label>
+        <input type="number" class="form-ctrl" id="fYear" min="1" max="99" value="5">
+      </div>
+    </div>
+    <div class="cond-block" id="condWork">
+      <div class="form-block">
+        <label class="form-lbl" for="fWorkYear"><i class="fas fa-calendar-check"></i> Years of Service</label>
+        <input type="number" class="form-ctrl" id="fWorkYear" min="1" max="50" value="5">
+      </div>
+    </div>
+    <div class="form-block">
+      <div class="ai-area">
+        <div class="ai-area-title"><i class="fas fa-wand-magic-sparkles"></i> Smart Message Generator</div>
+        <label class="form-lbl"><i class="fas fa-sliders-h"></i> Tone</label>
+        <div class="tone-grid">
+          <div class="tone-opt is-selected" data-tone="professional">Professional</div>
+          <div class="tone-opt" data-tone="warm">Warm &amp; Personal</div>
+          <div class="tone-opt" data-tone="celebratory">Celebratory</div>
+          <div class="tone-opt" data-tone="inspirational">Inspirational</div>
+        </div>
+        <button class="btn btn-ai" id="btnAI">
+          <span class="btn-text"><i class="fas fa-wand-magic-sparkles"></i> Generate Smart Message</span>
+          <div class="btn-spinner"></div>
+        </button>
+      </div>
+      <label class="form-lbl" for="fHeadline" style="margin-bottom:6px"><i class="fas fa-heading"></i> Custom Headline <span class="lbl-opt">(optional)</span></label>
+      <input type="text" class="form-ctrl" id="fHeadline" placeholder="Leave blank for the auto headline" style="margin-bottom:9px">
+      <label class="form-lbl" style="margin-bottom:6px"><i class="fas fa-pen-nib"></i> Custom Message <span class="lbl-opt">(optional)</span></label>
+      <textarea class="form-textarea" id="fMsg" placeholder="Leave blank to use template, or write your own&#8230;"></textarea>
+    </div>
+    <div class="form-block">
+      <label class="form-lbl"><i class="fas fa-signature"></i> Signed By</label>
+      <div class="sig-fixed">
+        <span class="sig-fixed-name">Sanju G</span>
+        <span class="sig-fixed-role">Head &#8211; Channel Management</span>
+      </div>
+    </div>
+    <div class="action-stack">
+      <button class="btn btn-gen" id="btnGenerate"><i class="fas fa-arrows-rotate"></i> Generate / Refresh</button>
+      <div class="btn-row">
+        <button class="btn btn-copy" id="btnCopy"><i class="fas fa-copy"></i> Copy Image</button>
+        <button class="btn btn-share" id="btnShare"><i class="fas fa-share-nodes"></i> Share</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-sec" id="btnImg"><i class="fas fa-image"></i> Save PNG</button>
+        <button class="btn btn-sec" id="btnPdf"><i class="fas fa-file-pdf"></i> Save PDF</button>
+      </div>
+      <button class="btn btn-rst" id="btnReset"><i class="fas fa-undo"></i> Reset Greeting</button>
+    </div>
+    <div class="ctrl-foot"><i class="fas fa-shield-alt" style="margin-right:4px"></i>Premium Edition &nbsp;&middot;&nbsp; Est. 1987</div>
   </aside>
-  <main class="preview-area" aria-label="Card preview">
-    <div class="preview-topbar"><div class="preview-topbar-l"><i class="fas fa-eye"></i> Live Preview</div><div class="preview-topbar-r">5 × 7 in · Print quality · High-res export</div></div>
-    <div class="card-stage" id="cardStage"><div class="stage-empty" id="stageEmpty"><i class="fas fa-layer-group"></i><p>Fill in the details on the left and click <strong>Generate Card</strong> to preview your premium greeting.</p></div></div>
+  <main class="preview-area">
+    <div class="preview-topbar">
+      <div class="preview-topbar-l"><i class="fas fa-eye"></i> Live Preview</div>
+      <div class="preview-topbar-r">5 &times; 7 in &nbsp;&middot;&nbsp; Print Quality &nbsp;&middot;&nbsp; High-Res Export</div>
+    </div>
+    <div class="card-stage" id="cardStage">
+      <div class="stage-empty" id="stageEmpty">
+        <div class="empty-ring"><i class="fas fa-layer-group"></i></div>
+        <p>Choose an occasion and start typing &#8212; your premium greeting updates <strong>live</strong> as you go.</p>
+      </div>
+    </div>
   </main>
+  <footer class="page-foot">AIS Windows &middot; Channel Initiative &nbsp;&middot;&nbsp; Powered with <span class="heart">&#10084;</span> by Sanju G</footer>
 </div>
-<div id="printMount" style="display:none;position:fixed;inset:0;z-index:9990;background:white;"></div>
-<div class="ld-overlay" id="ldOverlay" aria-live="polite"><div class="ld-ring"></div><div class="ld-text" id="ldText">Processing…</div></div>
-<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
-
+<div class="ld-overlay" id="ldOverlay"><div class="ld-ring"></div><div class="ld-text" id="ldText">Processing&#8230;</div></div>
+<div class="toast-wrap" id="toastWrap"></div>
 <script>
 'use strict';
-const TEMPLATES={birthday:[{id:'b1',name:'Classic',imageUrl:'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=900&auto=format&fit=crop&q=80',occasionLbl:'Birthday Celebration',badgeL1:'HAPPY',badgeL2:'BIRTHDAY',occTag:'Birthday',buildTitle:()=>`Wishing You A <span class="gold-span">Joyous Birthday</span>`,buildMsg:()=>`On your special day, we celebrate not just the occasion but the remarkable partnership we share. May the year ahead bring you unparalleled success, abundant joy, and prosperity beyond measure. It is our true privilege to have you as a cherished member of the AIS Windows family.`},{id:'b2',name:'Milestone',imageUrl:'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=900&auto=format&fit=crop&q=80',occasionLbl:'A Milestone Birthday',badgeL1:'MANY',badgeL2:'HAPPY RETURNS',occTag:'Birthday',buildTitle:()=>`Celebrating Your <span class="gold-span">Remarkable Journey</span>`,buildMsg:()=>`Every passing year adds another chapter to your legacy of excellence and integrity. On this milestone birthday, AIS Windows celebrates the extraordinary journey you have built — one defined by trust, dedication, and inspired leadership. May every dream you hold be fully realized in the year ahead.`},{id:'b3',name:'Warmth',imageUrl:'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=900&auto=format&fit=crop&q=80',occasionLbl:'A Day to Cherish',badgeL1:'WITH',badgeL2:'BLESSINGS',occTag:'Birthday',buildTitle:()=>`A Celebration <span class="gold-span">Filled With Joy</span>`,buildMsg:()=>`Birthdays are moments to pause, reflect, and celebrate the beautiful story of a life well lived. We feel genuinely fortunate to be part of your journey as a trusted partner and valued friend. May this day be as wonderful and extraordinary as the person you truly are.`}],marriage:[{id:'m1',name:'Eternal',imageUrl:'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&auto=format&fit=crop&q=80',occasionLbl:'Wedding Anniversary',badgeL1:'HAPPY',badgeL2:'ANNIVERSARY',occTag:'Anniversary',buildTitle:()=>`Celebrating Your <span class="gold-span">Beautiful Journey</span>`,buildMsg:()=>`As you celebrate another beautiful year of togetherness, we extend our warmest congratulations. The strength, harmony, and grace of your partnership mirrors the same values we cherish at AIS Windows. May your shared journey continue to flourish with love, laughter, and lasting happiness.`},{id:'m2',name:'Golden',imageUrl:'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=900&auto=format&fit=crop&q=80',occasionLbl:'With Warmest Wishes',badgeL1:'GOLDEN',badgeL2:'BLESSINGS',occTag:'Anniversary',buildTitle:()=>`A Union Blessed <span class="gold-span">With Grace</span>`,buildMsg:()=>`Together, you have woven a tapestry of love, trust, and shared dreams that grows richer with every year. On this cherished anniversary, AIS Windows wishes you continued happiness, enduring strength, and a future as luminous as gold. May every chapter ahead be more beautiful than the last.`},{id:'m3',name:'Harmony',imageUrl:'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=900&auto=format&fit=crop&q=80',occasionLbl:'Anniversary Greetings',badgeL1:'LOVE &',badgeL2:'JOY',occTag:'Anniversary',buildTitle:()=>`To Love & <span class="gold-span">Lasting Prosperity</span>`,buildMsg:()=>`The harmony of a truly loving partnership is one of life's greatest gifts. On your anniversary, we celebrate not just a date on the calendar but a shared life filled with meaning, devotion, and mutual respect. From all of us at AIS Windows, we extend heartfelt wishes for many more joyful years together.`}],showroom:[{id:'s1',name:'Milestone',imageUrl:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&auto=format&fit=crop&q=80',occasionLbl:'Showroom Anniversary',badgeL1:'SHOWROOM',badgeL2:'ANNIVERSARY',occTag:'Milestone',buildTitle:(n,ord)=>`Celebrating the <span class="gold-span">${ord} Anniversary</span>`,buildMsg:(n,sr,ord)=>`Congratulations on this remarkable milestone — the ${ord} Anniversary of ${sr}! Your commitment to excellence and your unwavering partnership have been instrumental in our shared journey. AIS Windows is proud to stand beside you as you celebrate this outstanding achievement and look toward an even brighter future.`},{id:'s2',name:'Excellence',imageUrl:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&auto=format&fit=crop&q=80',occasionLbl:'A Legacy of Excellence',badgeL1:'YEARS OF',badgeL2:'EXCELLENCE',occTag:'Excellence',buildTitle:(n,ord)=>`A Legacy That <span class="gold-span">Truly Inspires</span>`,buildMsg:(n,sr,ord)=>`Excellence is not a destination — it is a daily choice made with conviction. Your ${ord} year stands as a testament to the extraordinary standards you have maintained. ${sr} is a beacon of what dedication and passion can achieve. AIS Windows celebrates your enduring legacy with immense pride.`},{id:'s3',name:'Growth',imageUrl:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&auto=format&fit=crop&q=80',occasionLbl:'Partnership Milestone',badgeL1:'PROUD',badgeL2:'PARTNER',occTag:'Growth',buildTitle:(n,ord)=>`Growing Stronger <span class="gold-span">Together</span>`,buildMsg:(n,sr,ord)=>`Growth is the language of those who dare to dream big and act with purpose. On the occasion of the ${ord} Anniversary of ${sr}, AIS Windows honors the vision, trust, and relentless effort that has made this showroom a benchmark of success. Here's to many more years of remarkable growth, deep partnership, and shared prosperity.`}]};
 
-function getOrdinal(n){n=Math.max(1,parseInt(n)||1);const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])}
-function toast(msg,type='info'){const wrap=document.getElementById('toastWrap'),icons={success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'},el=document.createElement('div');el.className=`toast is-${type}`;el.innerHTML=`<i class="fas ${icons[type]||icons.info}" style="font-size:12px;flex-shrink:0"></i>${msg}`;wrap.appendChild(el);setTimeout(()=>el.remove(),3800)}
-function showLoader(text){document.getElementById('ldText').textContent=text;document.getElementById('ldOverlay').classList.add('show')}
-function hideLoader(){document.getElementById('ldOverlay').classList.remove('show')}
-function setExportEnabled(on){document.getElementById('btnPdf').disabled=!on;document.getElementById('btnImg').disabled=!on}
-const State={occasion:'birthday',tmplIdx:0,ready:false}
+/* INLINE SVG FALLBACKS (used when logo.png / signature.png not provided) */
+const AIS_LOGO = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="46" viewBox="0 0 130 46"><text x="2" y="30" font-family="Montserrat,sans-serif" font-size="25" font-weight="800" letter-spacing="3" fill="#1a1a2e">AIS</text><text x="2" y="42" font-family="Montserrat,sans-serif" font-size="7.5" font-weight="600" letter-spacing="3.5" fill="#6b6b82">WINDOWS</text><rect x="46" y="2" width="1.5" height="38" fill="#c9a03d" opacity="0.55"/><text x="54" y="18" font-family="Montserrat,sans-serif" font-size="6.5" font-weight="600" letter-spacing="1.2" fill="#c9a03d">A DIVISION OF</text><text x="54" y="28" font-family="Montserrat,sans-serif" font-size="7" font-weight="700" letter-spacing="0.8" fill="#a07c1e">ASAHI INDIA</text><text x="54" y="38" font-family="Montserrat,sans-serif" font-size="7" font-weight="700" letter-spacing="0.8" fill="#a07c1e">GLASS LTD.</text></svg>`;
+const AIS_LOGO_LIGHT = `<svg xmlns="http://www.w3.org/2000/svg" width="110" height="38" viewBox="0 0 110 38"><text x="2" y="26" font-family="Montserrat,sans-serif" font-size="22" font-weight="800" letter-spacing="3" fill="rgba(255,255,255,0.88)">AIS</text><text x="2" y="36" font-family="Montserrat,sans-serif" font-size="7" font-weight="600" letter-spacing="3" fill="rgba(255,255,255,0.52)">WINDOWS</text><rect x="40" y="1" width="1.2" height="32" fill="rgba(201,160,61,0.5)"/><text x="47" y="14" font-family="Montserrat,sans-serif" font-size="6" font-weight="600" letter-spacing="1" fill="rgba(201,160,61,0.82)">A DIVISION OF</text><text x="47" y="23" font-family="Montserrat,sans-serif" font-size="6.5" font-weight="700" letter-spacing="0.6" fill="rgba(201,160,61,0.65)">ASAHI INDIA</text><text x="47" y="32" font-family="Montserrat,sans-serif" font-size="6.5" font-weight="700" letter-spacing="0.6" fill="rgba(201,160,61,0.65)">GLASS LTD.</text></svg>`;
+const SIG_DARK = `<svg xmlns="http://www.w3.org/2000/svg" width="118" height="28" viewBox="0 0 118 28"><path d="M6 20C10 13,14 8,20 10C26 12,22 19,26 17C30 15,29 9,35 11C39 12,37 18,41 16C45 14,44 9,50 11C54 12,52 18,57 16C61 14,60 10,66 12C70 14,68 19,72 17C76 15,75 11,80 12" stroke="#1a1a2e" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M5 24L88 24" stroke="#c9a03d" stroke-width="0.7" opacity="0.45"/></svg>`;
+const SIG_LIGHT = `<svg xmlns="http://www.w3.org/2000/svg" width="118" height="28" viewBox="0 0 118 28"><path d="M6 20C10 13,14 8,20 10C26 12,22 19,26 17C30 15,29 9,35 11C39 12,37 18,41 16C45 14,44 9,50 11C54 12,52 18,57 16C61 14,60 10,66 12C70 14,68 19,72 17C76 15,75 11,80 12" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M5 24L88 24" stroke="rgba(201,160,61,0.45)" stroke-width="0.7"/></svg>`;
 
-/* ═══════════════════════════════════════════════
-   FIX: Convert local images to base64 before capture
-   This solves the CORS issue where html2canvas
-   cannot render relative-path images
-═══════════════════════════════════════════════ */
-function convertLocalImagesToBase64(container) {
-  const imgElements = container.querySelectorAll('img');
-  const promises = [];
-  imgElements.forEach(img => {
-    const src = img.getAttribute('src') || '';
-    // Only process local images (not external URLs)
-    if (src && !src.startsWith('http') && !src.startsWith('data:')) {
-      const promise = new Promise((resolve) => {
-        const testImg = new Image();
-        testImg.crossOrigin = 'anonymous';
-        testImg.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = testImg.naturalWidth;
-          canvas.height = testImg.naturalHeight;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(testImg, 0, 0);
-          img.src = canvas.toDataURL('image/png');
-          resolve();
-        };
-        testImg.onerror = () => {
-          // If local image fails, use fallback
-          if (img.classList.contains('cb-logo')) {
-            img.outerHTML = '<div class="cb-logo-fallback">AIS</div>';
-          } else if (img.classList.contains('cb-sig-img')) {
-            img.style.display = 'none';
-          }
-          resolve();
-        };
-        // Use the original card's already-loaded image as source
-        const originalImg = document.querySelector('#greetingCard img[src="' + src + '"]');
-        if (originalImg && originalImg.complete && originalImg.naturalWidth > 0) {
-          testImg.src = originalImg.src;
-        } else {
-          testImg.src = src;
-        }
-      });
-      promises.push(promise);
-    }
-  });
-  return Promise.all(promises);
+function svgURI(s) { return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(s))); }
+function svgCorner() {
+  return `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M2 20L2 2L20 2" stroke="rgba(201,160,61,0.55)" stroke-width="1.2"/><circle cx="2" cy="2" r="1.4" fill="rgba(201,160,61,0.5)"/><path d="M6 2L2 6" stroke="rgba(201,160,61,0.22)" stroke-width="0.7"/></svg>`;
 }
 
-const UI={init(){this._bindEvents();this._renderTemplates('birthday');setExportEnabled(false)},
-_bindEvents(){document.getElementById('fOccasion').addEventListener('change',e=>{State.occasion=e.target.value;State.tmplIdx=0;this._renderTemplates(State.occasion);this._toggleShowroomFields(State.occasion==='showroom');this._markDirty()});document.getElementById('btnGenerate').addEventListener('click',()=>this.generate());document.getElementById('btnPdf').addEventListener('click',()=>Exporter.pdf());document.getElementById('btnImg').addEventListener('click',()=>Exporter.image());document.getElementById('btnReset').addEventListener('click',()=>this.reset());['fName','fShowroom','fYear'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>this._markDirty())})},
-_toggleShowroomFields(show){document.getElementById('condShowroom').classList.toggle('show',show)},
-_markDirty(){State.ready=false;setExportEnabled(false)},
-_renderTemplates(occ){const grid=document.getElementById('tmplGrid'),list=TEMPLATES[occ]||[];grid.innerHTML='';list.forEach((t,i)=>{const div=document.createElement('div');div.className='tmpl-opt'+(i===State.tmplIdx?' is-selected':'');div.innerHTML=`<img class="tmpl-img" src="${t.imageUrl}" alt="${t.name}" loading="lazy"><div class="tmpl-overlay"></div><div class="tmpl-label">${t.name}</div><div class="tmpl-check"><i class="fas fa-check" style="font-size:8px;color:var(--navy)"></i></div>`;div.addEventListener('click',()=>{State.tmplIdx=i;this._renderTemplates(State.occasion);this._markDirty()});grid.appendChild(div)})},
-_validate(){let ok=true;const nameEl=document.getElementById('fName'),nameErr=document.getElementById('errName');if(!nameEl.value.trim()){nameEl.classList.add('is-error');nameErr.classList.add('show');ok=false}else{nameEl.classList.remove('is-error');nameErr.classList.remove('show')}if(State.occasion==='showroom'){const srEl=document.getElementById('fShowroom'),srErr=document.getElementById('errShowroom');if(!srEl.value.trim()){srEl.classList.add('is-error');srErr.classList.add('show');ok=false}else{srEl.classList.remove('is-error');srErr.classList.remove('show')}}return ok},
-generate(){if(!this._validate()){toast('Please fill in all required fields.','error');return}const name=document.getElementById('fName').value.trim(),showroom=document.getElementById('fShowroom').value.trim(),year=document.getElementById('fYear').value,ord=getOrdinal(year),tmpl=TEMPLATES[State.occasion][State.tmplIdx];CardRenderer.render({occasion:State.occasion,tmpl,name,showroom,ord});State.ready=true;setExportEnabled(true);toast('Card generated successfully!','success')},
-reset(){document.getElementById('fOccasion').value='birthday';document.getElementById('fName').value='Mr. Arpit Sharma';document.getElementById('fShowroom').value='Pune Flagship';document.getElementById('fYear').value='5';State.occasion='birthday';State.tmplIdx=0;State.ready=false;this._toggleShowroomFields(false);this._renderTemplates('birthday');this._markDirty();const existing=document.getElementById('greetingCard');if(existing)existing.remove();const empty=document.getElementById('stageEmpty');if(empty)empty.style.display='';document.querySelectorAll('.field-error').forEach(e=>e.classList.remove('show'));document.querySelectorAll('.form-ctrl.is-error').forEach(e=>e.classList.remove('is-error'));toast('Form has been reset.','info')}};
+/* LOCAL ASSET CACHE - loads logo.png + signature.png at startup as base64 */
+let LOGO_B64 = null;
+let SIG_B64  = null;
 
-const CardRenderer={render({occasion,tmpl,name,showroom,ord}){let titleHTML,msgText;if(occasion==='showroom'){titleHTML=tmpl.buildTitle(name,ord);msgText=tmpl.buildMsg(name,showroom||'your esteemed showroom',ord)}else{titleHTML=tmpl.buildTitle(name,ord);msgText=tmpl.buildMsg(name)}const cardEl=document.createElement('div');cardEl.id='greetingCard';cardEl.innerHTML=`<div class="ci-zone"><img class="ci-bg" src="${tmpl.imageUrl}" alt="${tmpl.occTag}" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display='none'"><div class="ci-overlay"></div><div class="ci-corner-tl"></div><div class="ci-corner-br"></div><div class="ci-tag">${tmpl.occTag}</div></div><div class="cb"><div class="cb-header"><img class="cb-logo" src="logo.png" onerror="this.outerHTML='<div class=&quot;cb-logo-fallback&quot;>AIS</div>'"><div class="cb-badge"><div class="cb-badge-inner"><span class="badge-l1">${tmpl.badgeL1}</span><span class="badge-l2">${tmpl.badgeL2}</span></div></div></div><div class="cb-rule"></div><div class="cb-occ-label">${tmpl.occasionLbl}</div><div class="cb-dear">Dear ${name},</div><h2 class="cb-title">${titleHTML}</h2><div class="cb-accent"></div><p class="cb-msg">${msgText}</p><div class="cb-sig"><img class="cb-sig-img" src="signature.png" alt="Signature" onerror="this.style.display='none'"><div class="cb-sig-name">Sanju G</div><div class="cb-sig-role">HEAD – CHANNEL MANAGEMENT<br>ACTIVATION &amp; ENABLEMENT</div><div class="cb-sig-co">AIS Windows | A Division of Asahi India Glass Ltd.</div></div></div><div class="cf-bar">Excellence in Every Detail &nbsp;·&nbsp; Since 1987</div>`;const stage=document.getElementById('cardStage'),existing=document.getElementById('greetingCard');if(existing)existing.remove();const empty=document.getElementById('stageEmpty');if(empty)empty.style.display='none';stage.appendChild(cardEl)}};
+async function preloadLocalAssets() {
+  async function toB64(filename) {
+    try {
+      const resp = await fetch(filename, { cache: 'no-cache' });
+      if (!resp.ok) return null;
+      const blob = await resp.blob();
+      return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload  = e => resolve(e.target.result);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(blob);
+      });
+    } catch (e) { return null; }
+  }
+  LOGO_B64 = await toB64('logo.png');
+  SIG_B64  = await toB64('signature.png');
+  console.log('logo.png:', LOGO_B64 ? 'loaded' : 'not found (SVG fallback)');
+  console.log('signature.png:', SIG_B64 ? 'loaded' : 'not found (SVG fallback)');
+}
 
-function getImageFilename(){const raw=(document.getElementById('fName')?.value||'Partner').trim().replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')||'Partner';const occLabels={birthday:'Birthday',marriage:'Anniversary',showroom:'ShowroomAnniv'};return`AIS-${occLabels[State.occasion]||'Greeting'}-${raw}.png`}
+/* TEMPLATE DATA */
+const TEMPLATES = {
+  birthday: [
+     { id:'b1', name:'Milestone',  img:'https://plus.unsplash.com/premium_photo-1663839412026-51a44cfadfb8?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'MANY',   badgeL2:'HAPPY RETURNS',occTag:'Birthday',   occasionLbl:'A Milestone Celebration', icon:'\u2728' },
+    { id:'b2', name:'Milestone',  img:'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=900&auto=format&fit=crop&q=80',badgeL1:'MANY',   badgeL2:'HAPPY RETURNS',occTag:'Birthday',   occasionLbl:'A Milestone Celebration', icon:'\u2728' },
+    { id:'b3', name:'Warmth',     img:'https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?q=80&w=636&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'WITH',   badgeL2:'WARM WISHES',  occTag:'Birthday',   occasionLbl:'A Day to Cherish',        icon:'\uD83C\uDF1F' },
+    { id:'b4', name:'Radiance',   img:'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=900&auto=format&fit=crop&q=80',badgeL1:'HAPPY',  badgeL2:'BIRTHDAY',     occTag:'Birthday',   occasionLbl:'Day of Joy & Grace',      icon:'\uD83C\uDF38' },
+    { id:'b5', name:'Golden',     img:'https://plus.unsplash.com/premium_photo-1677221924410-0d27f4940396?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'GOLDEN', badgeL2:'WISHES',       occTag:'Birthday',   occasionLbl:'Birthday Blessings',      icon:'\uD83D\uDC9B' }
+  ],
+  marriage: [
+    { id:'m1', name:'Eternal',    img:'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&auto=format&fit=crop&q=80',badgeL1:'HAPPY',  badgeL2:'ANNIVERSARY',  occTag:'Anniversary',occasionLbl:'Wedding Anniversary',     icon:'\uD83D\uDC8D' },
+    { id:'m2', name:'Golden Bond',img:'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=900&auto=format&fit=crop&q=80',badgeL1:'GOLDEN', badgeL2:'BLESSINGS',    occTag:'Anniversary',occasionLbl:'With Warmest Wishes',      icon:'\u2728' },
+    { id:'m3', name:'Harmony',    img:'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=900&auto=format&fit=crop&q=80',badgeL1:'LOVE &', badgeL2:'JOY',          occTag:'Anniversary',occasionLbl:'Anniversary Greetings',    icon:'\uD83C\uDF39' },
+    { id:'m4', name:'Timeless',   img:'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=900&auto=format&fit=crop&q=80',badgeL1:'WITH',   badgeL2:'LOVE',         occTag:'Anniversary',occasionLbl:'A Timeless Celebration',   icon:'\uD83D\uDC90' },
+    { id:'m5', name:'Radiant',    img:'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=900&auto=format&fit=crop&q=80',badgeL1:'EVER',   badgeL2:'AFTER',        occTag:'Anniversary',occasionLbl:'Anniversary Joy',          icon:'\uD83C\uDF37' }
+  ],
+  showroom: [
+    { id:'s1', name:'Milestone',  img:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&auto=format&fit=crop&q=80',badgeL1:'SHOWROOM',badgeL2:'ANNIVERSARY', occTag:'Milestone',  occasionLbl:'Showroom Anniversary',    icon:'\uD83C\uDFE2' },
+    { id:'s2', name:'Excellence', img:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&auto=format&fit=crop&q=80',badgeL1:'YEARS OF',badgeL2:'EXCELLENCE',  occTag:'Excellence', occasionLbl:'A Legacy of Excellence',  icon:'\u2B50' },
+    { id:'s3', name:'Growth',     img:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&auto=format&fit=crop&q=80',badgeL1:'PROUD',  badgeL2:'PARTNER',      occTag:'Growth',     occasionLbl:'Partnership Milestone',   icon:'\uD83D\uDCC8' },
+    { id:'s4', name:'Vision',     img:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=900&auto=format&fit=crop&q=80',badgeL1:'BRIGHT',  badgeL2:'FUTURE',       occTag:'Vision',     occasionLbl:'A Vision Celebrated',     icon:'\uD83D\uDD2E' }
+  ],
+  diwali: [
+    { id:'d1', name:'Diyas',      img:'https://images.unsplash.com/photo-1605292356183-a77d0a9c9d1d?q=80&w=712&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D=900&auto=format&fit=crop&q=80',badgeL1:'HAPPY',  badgeL2:'DIWALI',       occTag:'Diwali',     occasionLbl:'Festival of Lights',      icon:'\uD83E\uDE94' },
+    { id:'d2', name:'Deepawali',  img:'https://plus.unsplash.com/premium_photo-1698500034742-098f7fc04163?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'SHUBH',   badgeL2:'DEEPAWALI',    occTag:'Deepawali',  occasionLbl:'Shubh Deepawali',         icon:'\u2728' },
+    { id:'d3', name:'Festive',    img:'https://images.unsplash.com/photo-1635192592106-77a5aacbe1a3?q=80&w=1069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'DIWALI', badgeL2:'GREETINGS',    occTag:'Festival',   occasionLbl:'Diwali Celebrations',     icon:'\uD83C\uDF86' },
+    { id:'d4', name:'Lakshmi',    img:'https://images.unsplash.com/photo-1606285461069-80ba562575dd?q=80&w=686&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'LAKSHMI', badgeL2:'BLESSINGS',    occTag:'Diwali',     occasionLbl:'Blessings of Diwali',     icon:'\uD83C\uDF38' }
+  ],
+  newyear: [
+    { id:'n1', name:'Dawn',       img:'https://plus.unsplash.com/premium_photo-1663840297088-5b76140d74ba?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'HAPPY',  badgeL2:'NEW YEAR',     occTag:'New Year',   occasionLbl:'New Year Greetings',      icon:'\uD83C\uDF86' },
+    { id:'n2', name:'Promise',    img:'https://plus.unsplash.com/premium_photo-1663840297178-4dc221ab4b03?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'NEW YEAR',badgeL2:'BLESSINGS',   occTag:'New Year',   occasionLbl:'A Year Full of Promise',  icon:'\u2728' },
+    { id:'n3', name:'Cheers',     img:'https://images.unsplash.com/photo-1520316750891-270e081d94d8?q=80&w=1296&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'CHEERS',  badgeL2:'TO YOU',       occTag:'New Year',   occasionLbl:'New Year Celebrations',   icon:'\uD83E\uDD42' },
+    { id:'n4', name:'Horizon',    img:'https://plus.unsplash.com/premium_photo-1661274114223-44b3be45ad91?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'BRIGHT', badgeL2:'NEW YEAR',     occTag:'New Year',   occasionLbl:'A Brilliant New Chapter', icon:'\uD83C\uDF05' }
+  ],
+  holi: [
+    { id:'h1', name:'Colours',    img:'https://images.unsplash.com/photo-1616813769023-d0557572ddbe?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'HAPPY',  badgeL2:'HOLI',         occTag:'Holi',       occasionLbl:'Festival of Colours',     icon:'\uD83C\uDFA8' },
+    { id:'h2', name:'Joy',        img:'https://images.unsplash.com/photo-1551757891-24a8dabd2708?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'RANG',   badgeL2:'BARSE',        occTag:'Holi',       occasionLbl:'Holi Celebrations',       icon:'\uD83C\uDF08' },
+    { id:'h3', name:'Spring',     img:'https://images.unsplash.com/photo-1617184003170-1f266c325ff3?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'HOLI',   badgeL2:'GREETINGS',    occTag:'Holi',       occasionLbl:'Spring Festival',         icon:'\uD83C\uDF3A' }
+  ],
+  workanniversary: [
+    { id:'w1', name:'Milestone',  img:'https://images.unsplash.com/photo-1644229949667-60a778a206ab?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'WORK',   badgeL2:'ANNIVERSARY',  occTag:'Milestone',  occasionLbl:'Work Anniversary',        icon:'\uD83C\uDFC6' },
+    { id:'w2', name:'Excellence', img:'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=900&auto=format&fit=crop&q=80',badgeL1:'YEARS OF',badgeL2:'EXCELLENCE',  occTag:'Excellence', occasionLbl:'A Career of Excellence',  icon:'\u2B50' },
+    { id:'w3', name:'Journey',    img:'https://images.unsplash.com/photo-1669477377105-0736689c9935?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'PROUD',  badgeL2:'TEAM',         occTag:'Journey',    occasionLbl:'Work Anniversary Wishes', icon:'\uD83C\uDF1F' },
+    { id:'w4', name:'Legacy',     img:'https://plus.unsplash.com/premium_photo-1667514634205-fda5453a91ff?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'BUILDING',badgeL2:'LEGACIES',     occTag:'Legacy',     occasionLbl:'A Legacy in the Making',  icon:'\uD83C\uDFAF' }
+  ],
+  thankyou: [
+    { id:'t1', name:'Gratitude',  img:'https://images.unsplash.com/photo-1668027400307-c316968e8015?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'THANK',  badgeL2:'YOU',          occTag:'Gratitude',  occasionLbl:'With Deep Gratitude',     icon:'\uD83D\uDE4F' },
+    { id:'t2', name:'Appreciation',img:'https://plus.unsplash.com/premium_photo-1733259823567-9b681f9dd76e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'TRULY', badgeL2:'GRATEFUL',     occTag:'Appreciation',occasionLbl:'An Expression of Thanks', icon:'\uD83D\uDC9B' },
+    { id:'t3', name:'Bond',       img:'https://images.unsplash.com/photo-1594723768087-96f21e7887a0?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=900&auto=format&fit=crop&q=80',badgeL1:'WITH',   badgeL2:'GRATITUDE',    occTag:'Thank You',  occasionLbl:'Thank You Greetings',     icon:'\uD83C\uDF38' }
+  ]
+};
 
-const Exporter={async pdf(){const card=document.getElementById('greetingCard');if(!card)return;showLoader('Preparing PDF…');try{const pw=window.open('','_blank','width=600,height=900');if(!pw){toast('Pop-up blocked.','error');return}pw.document.write(this._buildPrintHTML(card.outerHTML));pw.document.close()}catch(err){toast('PDF export failed.','error')}finally{hideLoader()}},
-_buildPrintHTML(cardHTML){return`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AIS Greeting</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><style>@page{size:5in 7in;margin:0}*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}body{font-family:'Montserrat',sans-serif;background:white;display:flex;align-items:center;justify-content:center;width:5in;min-height:7in;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}:root{--gold:#c9a03d;--gold-light:#d9b84a;--gold-deep:#a07c1e;--navy:#1a1a2e;--cream:#fdfbf6;--grey-600:#6b6b82;--grey-400:#aaaabc;--blue-link:#1a5fb4}#greetingCard{width:5in;height:7in;background:var(--cream);overflow:hidden;display:flex;flex-direction:column}.ci-zone{width:100%;height:2.38in;flex-shrink:0;overflow:hidden;position:relative}.ci-bg{width:100%;height:100%;object-fit:cover}.ci-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.10) 0%,rgba(0,0,0,0.04) 45%,rgba(0,0,0,0.52) 100%)}.ci-corner-tl,.ci-corner-br{position:absolute;width:22px;height:22px;z-index:5}.ci-corner-tl{top:14px;left:14px;border-top:1.5px solid rgba(201,160,61,0.55);border-left:1.5px solid rgba(201,160,61,0.55)}.ci-corner-br{bottom:14px;right:14px;border-bottom:1.5px solid rgba(201,160,61,0.55);border-right:1.5px solid rgba(201,160,61,0.55)}.ci-tag{position:absolute;bottom:18px;left:26px;font-size:8.5px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.82)}.cb{flex:1;height:0;padding:0.2in 0.3in 0.15in;display:flex;flex-direction:column;background:var(--cream);position:relative;overflow:hidden}.cb::before{content:'AIS';position:absolute;bottom:14px;right:18px;font-size:52px;font-weight:800;color:rgba(201,160,61,0.05)}.cb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-shrink:0}.cb-logo{height:55px;width:auto}.cb-badge{width:64px;height:64px;border-radius:50%;flex-shrink:0;position:relative;background:conic-gradient(from 0deg,#c49a2e,#e8c96a 40%,#c49a2e 55%,#a07c1e 70%,#c49a2e)}.cb-badge-inner{position:absolute;inset:7px;border-radius:50%;background:linear-gradient(145deg,#d4af37,#b8942e);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.badge-l1{font-size:9px;font-weight:800;color:var(--navy)}.badge-l2{font-size:7.5px;font-weight:700;color:var(--navy)}.cb-rule{width:100%;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(201,160,61,0.3) 55%,transparent 100%);margin-bottom:9px;flex-shrink:0}.cb-occ-label{font-size:8px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:6px}.cb-dear{font-family:'Cormorant Garamond',serif;font-size:12px;font-style:italic;color:var(--grey-600)}.cb-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--navy);line-height:1.2;margin-bottom:9px;flex-shrink:0}.gold-span{color:var(--gold-deep)}.cb-accent{width:28px;height:2px;background:var(--gold);margin-bottom:9px;flex-shrink:0}.cb-msg{font-family:'Cormorant Garamond',serif;font-size:12px;font-style:italic;color:var(--grey-600);border-left:2px solid rgba(201,160,61,0.38);padding-left:12px;flex:0 1 auto;overflow:hidden;margin-bottom:10px}.cb-sig{border-top:1px solid rgba(201,160,61,0.22);padding-top:10px;flex-shrink:0;margin-top:auto}.cb-sig-img{height:32px;width:auto}.cb-sig-name{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:var(--navy)}.cb-sig-role{font-size:7px;font-weight:700;color:var(--grey-400)}.cb-sig-co{font-size:8px;font-weight:600;color:var(--blue-link)}.cf-bar{background:var(--navy);color:rgba(201,160,61,0.82);text-align:center;padding:10px 20px;font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;flex-shrink:0}@media print{#greetingCard{width:5in;height:7in}}</style></head><body>${cardHTML}<script>window.onload=function(){setTimeout(function(){window.print();setTimeout(function(){window.close();},600)},1600)}<\/script></body></html>`},
-async image(){const card=document.getElementById('greetingCard');if(!card)return;if(!State.ready){toast('Please generate a card first.','error');return}showLoader('Generating high-resolution image…');const CARD_W=490,CARD_H=686,fileName=getImageFilename();const wrapper=document.createElement('div');Object.assign(wrapper.style,{position:'absolute',top:'0',left:'0',width:CARD_W+'px',height:CARD_H+'px',overflow:'hidden',zIndex:'99999',background:'#fdfbf6'});const clone=card.cloneNode(true);Object.assign(clone.style,{width:CARD_W+'px',height:CARD_H+'px',minWidth:CARD_W+'px',maxWidth:CARD_W+'px',minHeight:CARD_H+'px',maxHeight:CARD_H+'px',animation:'none',transition:'none',transform:'none',borderRadius:'0',boxShadow:'none',overflow:'hidden',display:'flex',flexDirection:'column',position:'relative',flex:'none'});clone.id='greetingCardClone';const ciZone=clone.querySelector('.ci-zone');if(ciZone)Object.assign(ciZone.style,{height:'238px',maxHeight:'238px',minHeight:'238px',flexShrink:'0',overflow:'hidden',display:'block',position:'relative'});const cb=clone.querySelector('.cb');if(cb)Object.assign(cb.style,{display:'flex',flexDirection:'column',position:'relative',flex:'1 1 auto',height:'auto',minHeight:'0',overflow:'hidden',padding:'18px 26px 14px',background:'#fdfbf6'});const cbMsg=clone.querySelector('.cb-msg');if(cbMsg)Object.assign(cbMsg.style,{webkitMaskImage:'none',maskImage:'none',overflow:'visible',maxHeight:'200px',display:'block',flex:'none'});const cbSig=clone.querySelector('.cb-sig');if(cbSig)Object.assign(cbSig.style,{flexShrink:'0',marginTop:'auto',position:'relative',bottom:'auto'});const cfBar=clone.querySelector('.cf-bar');if(cfBar)Object.assign(cfBar.style,{flexShrink:'0',position:'relative',display:'block'});clone.querySelectorAll('*').forEach(el=>{el.style.animation='none';el.style.transition='none'});clone.querySelectorAll('img').forEach(img=>{img.setAttribute('crossorigin','anonymous');const src=img.getAttribute('src')||'';if(src.startsWith('http')&&!src.includes('_cb=')){img.src=src+(src.includes('?')?'&':'?')+'_cb='+Date.now()}});/* ══════════════════════════════════════════ FIX: Convert local images to base64 BEFORE capture ═══════════════════════════════════════════ */await convertLocalImagesToBase64(clone);wrapper.appendChild(clone);const stage=document.getElementById('cardStage');if(stage){stage.appendChild(wrapper)}else{document.body.appendChild(wrapper)}await new Promise(r=>setTimeout(r,600));try{const canvas=await html2canvas(clone,{scale:3,useCORS:true,allowTaint:false,backgroundColor:'#fdfbf6',logging:false,width:CARD_W,height:CARD_H});canvas.toBlob(blob=>{if(!blob){toast('Failed to create image.','error');return}const url=URL.createObjectURL(blob),a=document.createElement('a');a.download=fileName;a.href=url;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},1000);toast(`Saved as "${fileName}" (${canvas.width}×${canvas.height}px)`,'success')},'image/png',1.0)}catch(err){console.error('Image export error:',err);toast('Image export failed. Try PDF instead.','error')}finally{if(wrapper.parentNode)wrapper.parentNode.removeChild(wrapper);hideLoader()}}};
+/* TITLES */
+const TITLES = {
+  birthday:       ['Wishing You A <span class="gs">Luminous Birthday</span>','Celebrating Your <span class="gs">Remarkable Journey</span>','A Celebration <span class="gs">Filled With Joy</span>','Shining Bright <span class="gs">On Your Day</span>','A Golden <span class="gs">Day Awaits You</span>'],
+  marriage:       ['Celebrating Your <span class="gs">Beautiful Journey</span>','A Union Blessed <span class="gs">With Grace</span>','To Love &amp; <span class="gs">Lasting Prosperity</span>','Love That Grows <span class="gs">More Beautiful</span>','Together Is Our <span class="gs">Favourite Place</span>'],
+  showroom:       ['','A Legacy That <span class="gs">Truly Inspires</span>','Growing Stronger <span class="gs">Together</span>','The Future Is <span class="gs">Brilliantly Yours</span>'],
+  diwali:         ['Light, Joy &amp; <span class="gs">Prosperity</span>','Wishing You A <span class="gs">Shubh Deepawali</span>','Sparkle, Shine &amp; <span class="gs">Celebrate</span>','May Lakshmi\'s <span class="gs">Grace Be With You</span>'],
+  newyear:        ['Welcome A <span class="gs">Glorious New Year</span>','A Fresh Start &amp; <span class="gs">Infinite Possibility</span>','To New <span class="gs">Beginnings &amp; Beyond</span>','The Best <span class="gs">Is Yet to Come</span>'],
+  holi:           ['Play, Splash &amp; <span class="gs">Celebrate</span>','May Colours <span class="gs">Fill Your World</span>','A Season of <span class="gs">Joy &amp; Colour</span>'],
+  workanniversary:['','','A Journey <span class="gs">Worth Celebrating</span>','Building <span class="gs">Something Great</span>'],
+  thankyou:       ['Our Deepest <span class="gs">Thank You</span>','You Make the <span class="gs">Difference</span>','Thank You for <span class="gs">Everything</span>']
+};
 
-document.addEventListener('DOMContentLoaded',()=>UI.init());
+function buildTitle(occ, idx, ord, wOrd) {
+  if (occ === 'showroom') {
+    return idx === 0
+      ? 'Celebrating the <span class="gs">' + ord + ' Anniversary</span>'
+      : (TITLES.showroom[idx] || 'Growing Stronger <span class="gs">Together</span>');
+  }
+  if (occ === 'workanniversary') {
+    if (idx === 0) return 'Celebrating Your <span class="gs">' + wOrd + ' Year</span> With Us';
+    if (idx === 1) return wOrd + ' Years of <span class="gs">Outstanding Work</span>';
+    return TITLES.workanniversary[idx] || 'A Journey <span class="gs">Worth Celebrating</span>';
+  }
+  return (TITLES[occ] || [])[idx] || 'With Our <span class="gs">Warmest Wishes</span>';
+}
+
+/* SMART MESSAGE ENGINE */
+const MSG = (() => {
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  const DB = {
+    birthday: {
+      professional: ['We are delighted to extend our warmest birthday wishes to you. Your continued trust and partnership have been integral to the growth of AIS Windows, and on this special occasion we celebrate not just the date, but the distinguished professional you are. May the year ahead bring you exceptional success, robust health, and every achievement you have envisioned.','On behalf of the entire AIS Windows team, we extend our most sincere birthday greetings. Your commitment to excellence and the integrity with which you conduct your work continue to inspire all of us. May this birthday mark the beginning of your most productive and fulfilling year yet.'],
+      warm: ['Happy Birthday! Today we celebrate not just a day on the calendar but a person who has made a real difference to everyone around them. Your warmth and the genuine spirit you bring to every interaction make you someone truly worth celebrating. May your day be filled with joy, laughter, and the company of those you love most.','Wishing you a birthday as bright and beautiful as the kindness you so freely give. From everyone at AIS Windows, we send our warmest wishes for a day that feels as wonderful as you make every interaction feel. May this year bring you all the happiness you so richly deserve.'],
+      celebratory: ['Happy Birthday! It\'s time to celebrate the amazing person you are - and what a celebration it should be! Your energy, your spirit, and your incredible drive make every day more exciting. May this birthday be the start of the most spectacular year of your life, filled with victories, laughter, and unforgettable moments!','It\'s your birthday, and the whole AIS Windows family is celebrating with you! You deserve every bit of joy, every cheer, and every wonderful surprise this day has in store. Here\'s to a year ahead that exceeds all your expectations - bigger, bolder, and more brilliant than ever before!'],
+      inspirational: ['Every year adds a new layer of wisdom, experience, and strength to the remarkable person you already are. Like gold that grows more valuable with time, your best is always ahead of you. On your birthday, AIS Windows celebrates the journey you have walked and looks forward with great excitement to all you will achieve in the year to come.','Greatness is not a destination - it is a daily practice, and you demonstrate it every single day. On your birthday, AIS Windows salutes the vision and tenacity that define you, and sends heartfelt wishes for a year in which every dream finds its fullest expression.']
+    },
+    marriage: {
+      professional: ['On behalf of AIS Windows, we extend our warmest congratulations on your wedding anniversary. The strength and harmony of a lasting partnership are qualities we deeply admire, and your relationship reflects both in the most graceful way. May this milestone be the occasion for joyful reflections and the promise of even more wonderful years together.','AIS Windows is delighted to join in the celebration of your wedding anniversary. A commitment sustained with care, respect, and mutual devotion is one of life\'s greatest achievements. We extend our most sincere wishes for continued happiness, good health, and a future as beautiful as the journey you have shared.'],
+      warm: ['Happy Anniversary! There is something truly beautiful about two people who choose each other, year after year, with the same love and devotion they began with. May your special day be filled with tender moments, warm memories, and the quiet joy of knowing how deeply you are loved. From all of us at AIS Windows, with heartfelt warmth.','What a beautiful thing it is to celebrate love that grows richer with every passing year. On your anniversary, we at AIS Windows send our warmest wishes and hope that today is filled with all the little things that make life truly wonderful - laughter, love, and the company of the one who matters most.'],
+      celebratory: ['Happy Anniversary - it\'s time to celebrate! Love as beautiful and enduring as yours deserves nothing less than the grandest of celebrations. May this anniversary be filled with cherished memories and the wonderful anticipation of all the adventures still ahead. Congratulations from the entire AIS Windows family!','Celebrating love, celebrating togetherness, celebrating YOU! Happy Anniversary from AIS Windows. May this milestone be the most memorable one yet, filled with joy, laughter, and the knowledge that the very best chapters of your story are still to be written.'],
+      inspirational: ['The most enduring partnerships are built on trust, respect, and the daily choice to show up for each other. Your marriage is a masterclass in all three. On this anniversary, AIS Windows celebrates a union that inspires everyone who witnesses it, and wishes you a future as luminous as the love you share.','Some stories become more compelling with every chapter, and yours is one of them. On your anniversary, AIS Windows celebrates the beautiful narrative you are writing together - one of love, resilience, and the courage to keep choosing each other. May the chapters ahead be your most extraordinary yet.']
+    },
+    showroom: {
+      professional: ['This milestone is a testament to the disciplined execution, customer focus, and professional excellence that have defined your showroom from its very first day. AIS Windows is proud to be your partner in this journey and looks forward to many more years of shared growth, mutual trust, and outstanding results.','Sustained success of this calibre is the result of consistent effort, sound leadership, and an unwavering commitment to quality. We are honoured to count your showroom among our most valued partners and look forward to the continued excellence that defines your work.'],
+      warm: ['What a beautiful journey it has been! We at AIS Windows are genuinely proud to have been part of this story, watching your showroom grow from strength to strength. Happy Anniversary, and here\'s to many more years of wonderful collaboration!','Your showroom is so much more than a business - it is a reflection of your passion, your dedication, and the genuine relationships you have built. AIS Windows is deeply proud of this partnership and excited about the beautiful chapters still ahead.'],
+      celebratory: ['Your showroom has become a benchmark of quality and service, and this anniversary deserves to be celebrated in the grandest style! AIS Windows raises a toast to your incredible achievement and to the exciting years of growth and success that lie ahead!','This is a milestone to be celebrated with tremendous pride. It is a reflection of your vision, your team, and your relentless commitment to being the best. Let the celebrations begin - you have more than earned them!'],
+      inspirational: ['This milestone is not merely a commercial achievement - it is a legacy being built, one customer relationship, one quality product, one inspired decision at a time. AIS Windows is proud to stand beside a partner who understands that true success is measured not just in years but in the lives touched.','Great businesses are not built overnight - they are built with vision, with integrity, and with the willingness to show up and give the best every single day. AIS Windows celebrates the extraordinary foundation you have laid and the even greater legacy you are creating.']
+    },
+    diwali: {
+      professional: ['On the auspicious occasion of Diwali, AIS Windows extends its warmest festive greetings. This festival of lights symbolises the enduring triumph of knowledge, wisdom, and righteous purpose - values that we strive to embody in our work and partnerships every day. May Goddess Lakshmi bless your business with abundant prosperity and your family with enduring happiness.','AIS Windows wishes you and your family a very joyous and prosperous Diwali. This sacred festival is a beautiful reminder of the light that purposeful work and genuine relationships bring into our lives. We are grateful for your valued partnership and wish you a festive season filled with joy, peace, and exceptional success.'],
+      warm: ['Wishing you a Diwali filled with the warmth of diyas, the sweetness of mithai, and the laughter of family and friends gathered close. May the light of this beautiful festival find its way into every corner of your home and heart. From the AIS Windows family to yours - Happy Diwali!','Happy Diwali! May your home sparkle with the glow of a thousand diyas, your heart overflow with gratitude, and your family enjoy every beautiful moment of this joyous festival. We feel truly blessed to have you as part of the AIS Windows family.'],
+      celebratory: ['Happy Diwali! Let the fireworks begin, the sweets be shared, and the diyas burn bright! May Goddess Lakshmi shower your home and business with abundance, joy, and spectacular success this festive season and throughout the year!','It\'s Diwali - the most beautiful, the most joyful, the most spectacular festival of them all! AIS Windows wishes you a celebration as dazzling as the fireworks and as sweet as the finest mithai. May every moment of this festive season be pure magic!'],
+      inspirational: ['Diwali teaches us that light does not merely illuminate a room - it transforms it. In the same way, the work we do, the relationships we build, and the integrity with which we conduct our lives can transform everything around us. May this Diwali renew your purpose and remind you of the extraordinary impact your light has on the world.','A single diya can illuminate an entire room - and a single act of excellence, integrity, or kindness can illuminate an entire career. This Diwali, AIS Windows celebrates not just the festival but the light you bring to everything you do. May the year ahead be your most luminous yet.']
+    },
+    newyear: {
+      professional: ['As we step into the new year, AIS Windows extends its most sincere wishes for your continued success, good health, and professional fulfilment. The partnership we share is one we deeply value, and we look forward with great optimism to the opportunities and achievements the coming year will bring.','On behalf of AIS Windows, we wish you a very Happy New Year. The year ahead holds tremendous promise, and we are confident that your commitment to excellence will continue to yield outstanding results. We look forward to another year of strong partnership, mutual growth, and shared achievement.'],
+      warm: ['Happy New Year! May the year ahead be filled with beautiful moments, warm connections, and all the small joys that make life truly rich. We at AIS Windows are grateful for the warmth you bring to our partnership and hope that the new year returns that warmth to you tenfold.','Wishing you a New Year that feels as wonderful as a fresh start always does - full of possibility, full of hope, and full of the quiet joy of knowing that the best is still to come. From everyone at AIS Windows, with warm and heartfelt wishes.'],
+      celebratory: ['Happy New Year! Out with the old and in with the absolutely spectacular - because this year is going to be extraordinary! AIS Windows raises a toast to you and the incredible things you are going to achieve. May every month bring a new victory and every day a reason to celebrate!','The new year is here and the possibilities are endless! Happy New Year from AIS Windows - may this be the year you achieve everything you have been building toward and create memories that will make you smile for years to come!'],
+      inspirational: ['A new year is not merely a change of date - it is an invitation to reimagine what is possible, to set bolder goals, and to pursue them with renewed conviction. AIS Windows steps into this new chapter with you, inspired by the journey so far and energised by the extraordinary potential of what lies ahead.','Every great achievement begins with the decision to try - and every new year is the perfect moment to make that decision again, with more wisdom, more courage, and more clarity of purpose than the year before. AIS Windows wishes you a year of inspired action, meaningful growth, and a vision fully realised.']
+    },
+    holi: {
+      professional: ['On the joyous occasion of Holi, AIS Windows extends warm festive greetings to you and your family. This vibrant festival of colours is a celebration of life, renewal, and the bonds that connect us - values that are central to the partnership we share. May the spirit of Holi bring freshness and new energy to all your endeavours.','AIS Windows wishes you a very Happy Holi. This beautiful festival reminds us of the joy that comes from celebrating together and the renewal that each new season brings. May the colours of Holi fill your life with energy, optimism, and the promise of wonderful things ahead.'],
+      warm: ['Happy Holi! May the colours of this beautiful festival paint your world in every shade of joy, love, and laughter. Holi is a time for letting go, celebrating freely, and being fully present with the people who matter most. Warmest wishes from the AIS Windows family!','Wishing you a Holi as vibrant and joyful as the person you are! May the colours fly freely, the laughter ring loud, and the sweetness of the season fill your home with warmth and happiness.'],
+      celebratory: ['Happy Holi - let the colours fly! May your celebration be the most joyful, most vibrant, and most memorable one yet! Splash the colours freely, eat the sweets enthusiastically, and celebrate the absolute joy of this spectacular festival!','Rang barse, colours everywhere, and joy in every direction - Happy Holi! May this spectacular festival bring you an abundance of colour, laughter, and the pure exhilaration of celebrating life at its most vibrant.'],
+      inspirational: ['Holi reminds us that beauty comes in every colour - and that the most extraordinary lives are lived in full, vibrant colour. May this festival inspire you to embrace every hue of experience and colour your year ahead with the brightest shades of purpose, passion, and joy.','Every colour in a Holi celebration has its own beauty, and together they create something extraordinary. May your canvas always be brilliantly, courageously colourful. Happy Holi from AIS Windows.']
+    },
+    workanniversary: {
+      professional: ['This anniversary is a reflection of your commitment, your professionalism, and the genuine care you bring to your work every single day. AIS Windows is deeply grateful for your contributions and looks forward with great enthusiasm to the continued journey ahead.','Years of consistent dedication, professional excellence, and meaningful contribution is a milestone worthy of the highest recognition. Your work has made a tangible and lasting difference, and we are honoured to have you as part of this team.'],
+      warm: ['Time flies when you are doing meaningful work alongside wonderful people - and every year with you has been exactly that. We at AIS Windows are so grateful for your warmth, your dedication, and the unique gifts you bring to our team every day.','Today we celebrate not just the time you have given but the heart, the talent, and the genuine care you bring to everything you do. AIS Windows is so much better for having you, and we simply want to say: thank you, from the bottom of our hearts.'],
+      celebratory: ['Work anniversary time - time to celebrate! Years of outstanding work, incredible dedication, and making every project better just by being involved - that absolutely deserves the grandest celebration. AIS Windows raises a toast to you and your remarkable journey!','You have achieved so much, contributed so powerfully, and made AIS Windows a better place in so many ways. Today we celebrate all of it - loudly, proudly, and with tremendous gratitude!'],
+      inspirational: ['The most meaningful careers are built one courageous day at a time - and you have built something truly significant. Your dedication, your growth, and the quiet excellence with which you approach your work are an inspiration to everyone around you.','A work anniversary is a chapter worth reading slowly - because every page of your journey with AIS Windows has been written with purpose, integrity, and a commitment to excellence. We celebrate not just the years but the extraordinary person who has made each of them count.']
+    },
+    thankyou: {
+      professional: ['AIS Windows extends its most sincere gratitude for the invaluable support, trust, and partnership you have extended to us. Your contribution has been instrumental in our shared success, and we want to formally acknowledge the difference your involvement has made.','On behalf of the entire AIS Windows team, we wish to express our deepest appreciation for your partnership and the confidence you have placed in us. The trust you extend is something we do not take lightly, and we remain committed to delivering the excellence that your support deserves.'],
+      warm: ['From the bottom of our hearts, thank you. Thank you for your trust, your warmth, and for being the kind of partner who makes every collaboration feel like a genuine pleasure. At AIS Windows, we never take for granted the wonderful relationships we have built, and yours is one we hold especially dear.','Some thank-yous simply cannot be said enough - and this is one of them. Your kindness, your loyalty, and the genuine spirit you bring to everything you do have made a real difference to all of us at AIS Windows.'],
+      celebratory: ['A great big THANK YOU from the entire AIS Windows family! Your support, your enthusiasm, and your incredible partnership have been a game-changer, and we want to celebrate you and express our enormous gratitude. You have made a real difference!','THANK YOU - and we mean that in the most enthusiastic and heartfelt way possible! Your partnership, your trust, and the energy you bring to everything you do have made an enormous impact on AIS Windows.'],
+      inspirational: ['Gratitude, at its deepest, is the recognition that we do not succeed alone - that every meaningful achievement is built on the foundation of trust, collaboration, and the generosity of those who believe in us. You have been that foundation for AIS Windows, and we are profoundly grateful.','The most powerful partnerships are built on trust, on shared values, and on the genuine belief that we are stronger together. You have been that kind of partner to AIS Windows, and we want you to know that your contribution has mattered deeply.']
+    }
+  };
+  return {
+    generate(occ, tone) {
+      const ok = occ in DB ? occ : 'birthday';
+      const tk = tone in DB[ok] ? tone : 'professional';
+      return pick(DB[ok][tk]);
+    }
+  };
+})();
+
+/* FILE UPLOAD HANDLERS - user selects logo.png / signature.png; FileReader -> base64 */
+function bindAssetUploads() {
+  function handleUpload(inputId, boxId, statusId, previewId, onLoad) {
+    const input   = document.getElementById(inputId);
+    const box     = document.getElementById(boxId);
+    const status  = document.getElementById(statusId);
+    const preview = document.getElementById(previewId);
+    if (!input) return;
+    input.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const b64 = ev.target.result;
+        onLoad(b64);
+        box.classList.add('has-file');
+        status.textContent = file.name;
+        preview.src = b64;
+        const card = document.getElementById('greetingCard');
+        if (card) { State._structKey = null; UI.live(); }
+        toast('Loaded: ' + file.name, 'success');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  handleUpload('logoFileInput', 'logoUploadBox', 'logoStatus', 'logoPreview', b64 => { LOGO_B64 = b64; });
+  handleUpload('sigFileInput',  'sigUploadBox',  'sigStatus',  'sigPreview',  b64 => { SIG_B64 = b64; });
+}
+
+/* STATE */
+const State = { occasion:'birthday', tmplIdx:0, layout:'classic', theme:'cream', tone:'professional', ready:false, autoMsg:'', _structKey:null };
+
+/* UTILITIES */
+function getOrdinal(val) {
+  const n = Math.max(1, parseInt(String(val).replace(/\D/g,''), 10) || 1);
+  const s = ['th','st','nd','rd'], v = n % 100;
+  return n + (s[(v-20)%10] || s[v] || s[0]);
+}
+
+function toast(msg, type='info') {
+  const wrap = document.getElementById('toastWrap');
+  const icons = { success:'fa-check-circle', error:'fa-exclamation-circle', info:'fa-info-circle' };
+  const el = document.createElement('div');
+  el.className = 'toast is-' + type;
+  el.innerHTML = '<i class="fas ' + (icons[type]||icons.info) + '" style="font-size:10px;flex-shrink:0"></i>' + msg;
+  wrap.appendChild(el);
+  const t = setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 4200);
+  el.addEventListener('click', () => { clearTimeout(t); if (el.parentNode) el.parentNode.removeChild(el); });
+}
+
+function showLoader(txt) { document.getElementById('ldText').textContent = txt; document.getElementById('ldOverlay').classList.add('show'); }
+function hideLoader()    { document.getElementById('ldOverlay').classList.remove('show'); }
+function setExport(on)   {
+  ['btnPdf','btnImg','btnCopy','btnShare'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !on; });
+}
+
+let _rsz;
+function scaleCard() {
+  const card = document.getElementById('greetingCard');
+  if (!card) return;
+  const stage = document.getElementById('cardStage');
+  const avail = stage.clientWidth - 80;
+  if (avail < 490) {
+    const sc = Math.max(0.65, avail / 490);
+    card.style.transform = 'scale(' + sc + ')';
+    card.style.transformOrigin = 'top center';
+    card.style.marginBottom = '-' + (686 * (1 - sc)) + 'px';
+  } else {
+    card.style.transform = '';
+    card.style.marginBottom = '';
+  }
+}
+window.addEventListener('resize', () => { clearTimeout(_rsz); _rsz = setTimeout(scaleCard, 120); });
+
+/* CARD CONTEXT (signatory + firm, set per render) */
+let CARD_CTX = { sigName:'Sanju G', sigRoleHTML:'HEAD &#x2013; CHANNEL MANAGEMENT<br>ACTIVATION &amp; ENABLEMENT', firm:'' };
+
+/* HTML-escape user text so names/firms/messages with & < > render safely */
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* Re-roll the auto (template) message for the current occasion + tone */
+function regenAuto() { State.autoMsg = MSG.generate(State.occasion, State.tone); }
+
+/* Gather every input into one render-ready payload (used live + on export) */
+function collectInputs() {
+  const rawName = (document.getElementById('fName').value || '').trim();
+  const name    = esc(rawName || 'Valued Partner');
+  const firmRaw = (document.getElementById('fFirm') ? document.getElementById('fFirm').value : '').trim();
+  const firm    = firmRaw ? esc(firmRaw) : '';
+  const sr      = ((document.getElementById('fShowroom') || {}).value || '').trim() || 'your esteemed showroom';
+  const ord     = getOrdinal(((document.getElementById('fYear') || {}).value) || '5');
+  const wOrd    = getOrdinal(((document.getElementById('fWorkYear') || {}).value) || '5');
+
+  const list = TEMPLATES[State.occasion] || [];
+  const tmpl = list[Math.min(State.tmplIdx, Math.max(0, list.length - 1))] || list[0];
+
+  const headline  = (document.getElementById('fHeadline') ? document.getElementById('fHeadline').value : '').trim();
+  const titleHTML = headline ? esc(headline) : buildTitle(State.occasion, State.tmplIdx, ord, wOrd);
+
+  const custom = (document.getElementById('fMsg').value || '').trim();
+  let raw = custom || State.autoMsg || MSG.generate(State.occasion, State.tone);
+  if (!custom) {
+    if (State.occasion === 'showroom')        raw = 'Congratulations on the ' + ord + ' Anniversary of ' + sr + '! ' + raw;
+    else if (State.occasion === 'workanniversary') raw = 'On the occasion of your ' + wOrd + ' Work Anniversary, ' + raw.charAt(0).toLowerCase() + raw.slice(1);
+  }
+  const msgText = esc(raw).replace(/\n/g, '<br>');
+
+  const sigName     = 'Sanju G';
+  const sigRoleHTML = 'HEAD &#x2013; CHANNEL MANAGEMENT<br>ACTIVATION &amp; ENABLEMENT';
+
+  return { tmpl, name, firm, titleHTML, msgText, layout: State.layout, theme: State.theme, sigName, sigRoleHTML };
+}
+
+/* CARD HTML HELPERS */
+function makeBadge(t) {
+  return '<div class="cb-badge"><div class="cb-badge-outer"></div><div class="cb-badge-ring"></div>'
+    + '<div class="cb-badge-inner"><span class="badge-l1">' + t.badgeL1 + '</span>'
+    + '<span class="badge-l2">' + t.badgeL2 + '</span></div></div>';
+}
+
+function makeShared(tmpl, name, titleHTML, msgText, isDark) {
+  const ctx = CARD_CTX || {};
+  const sigName     = ctx.sigName     || 'Sanju G';
+  const sigRoleHTML = ctx.sigRoleHTML || 'HEAD &#x2013; CHANNEL MANAGEMENT<br>ACTIVATION &amp; ENABLEMENT';
+  const firm        = ctx.firm        || '';
+  const firmHTML = '<div class="cb-firm"' + (firm ? '' : ' style="display:none"') + '>' + firm + '</div>';
+  return '<div class="cb-rule"></div>'
+    + '<div class="cb-ornament">&#x2726;</div>'
+    + '<div class="cb-occ-label">' + tmpl.occasionLbl + '</div>'
+    + '<div class="cb-dear">Dear ' + name + ',</div>'
+    + firmHTML
+    + '<h2 class="cb-title">' + titleHTML + '</h2>'
+    + '<div class="cb-accent"><div class="cb-accent-bar"></div><div class="cb-accent-dot"></div><div class="cb-accent-dot"></div></div>'
+    + '<p class="cb-msg">' + msgText + '</p>'
+    + '<div class="cb-sig">'
+    + sigBlockHTML(isDark)
+    + '<div class="cb-sig-name">' + sigName + '</div>'
+    + '<div class="cb-sig-role">' + sigRoleHTML + '</div>'
+    + '<div class="cb-sig-co">AIS Windows | A Division of Asahi India Glass Ltd.</div>'
+    + '</div>';
+}
+
+function makeFooter() {
+  return '<div class="cf-bar"><span class="cf-gem">&#x2726;</span> Excellence in Every Detail &nbsp;&middot;&nbsp; Since 1987 <span class="cf-gem">&#x2726;</span></div>';
+}
+
+/* UI CONTROLLER */
+const UI = {
+  init() {
+    this._bindEvents();
+    this._renderTemplates('birthday');
+    this._toggleCond('birthday');
+    regenAuto();
+    State._structKey = null;
+    this.live();
+  },
+
+  _bindEvents() {
+    const self = this;
+    document.getElementById('fOccasion').addEventListener('change', e => {
+      State.occasion = e.target.value;
+      const list = TEMPLATES[State.occasion] || [];
+      if (State.tmplIdx >= list.length) State.tmplIdx = 0;
+      self._renderTemplates(State.occasion);
+      self._toggleCond(State.occasion);
+      regenAuto();
+      self.live();
+    });
+    document.querySelectorAll('.layout-opt').forEach(el => el.addEventListener('click', () => {
+      document.querySelectorAll('.layout-opt').forEach(x => x.classList.remove('is-selected'));
+      el.classList.add('is-selected'); State.layout = el.dataset.layout; self.live();
+    }));
+    document.querySelectorAll('.theme-swatch').forEach(el => el.addEventListener('click', () => {
+      document.querySelectorAll('.theme-swatch').forEach(x => x.classList.remove('is-selected'));
+      el.classList.add('is-selected'); State.theme = el.dataset.theme; self.live();
+    }));
+    document.querySelectorAll('.tone-opt').forEach(el => el.addEventListener('click', () => {
+      document.querySelectorAll('.tone-opt').forEach(x => x.classList.remove('is-selected'));
+      el.classList.add('is-selected'); State.tone = el.dataset.tone; regenAuto(); self.live();
+    }));
+    document.getElementById('btnGenerate').addEventListener('click', () => self.generate());
+    document.getElementById('btnPdf').addEventListener('click',   () => Exporter.pdf());
+    document.getElementById('btnImg').addEventListener('click',   () => Exporter.image());
+    document.getElementById('btnCopy').addEventListener('click',  () => Exporter.copy());
+    document.getElementById('btnShare').addEventListener('click', () => Exporter.share());
+    document.getElementById('btnReset').addEventListener('click', () => self.reset());
+    document.getElementById('btnAI').addEventListener('click',    () => self.smartMsg());
+
+    const deb = (fn, ms) => { let t; return () => { clearTimeout(t); t = setTimeout(fn, ms || 160); }; };
+    const liveDeb = deb(() => self.live(), 160);
+    ['fName','fFirm','fShowroom','fYear','fWorkYear','fHeadline','fMsg'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.addEventListener('input', liveDeb);
+    });
+  },
+
+  _toggleCond(occ) {
+    document.getElementById('condShowroom').classList.toggle('show', occ === 'showroom');
+    document.getElementById('condWork').classList.toggle('show', occ === 'workanniversary');
+  },
+
+  _renderTemplates(occ) {
+    const grid = document.getElementById('tmplGrid');
+    const list = TEMPLATES[occ] || [];
+    if (!list.length) { grid.innerHTML = '<div style="font-size:10px;color:#aaa;padding:4px">No templates</div>'; return; }
+    const existing = grid.querySelectorAll('.tmpl-opt');
+    if (existing.length === list.length && grid.dataset.occ === occ) {
+      existing.forEach((el, i) => el.classList.toggle('is-selected', i === State.tmplIdx));
+      return;
+    }
+    grid.dataset.occ = occ;
+    grid.innerHTML = '';
+    list.forEach((t, i) => {
+      const d = document.createElement('div');
+      d.className = 'tmpl-opt' + (i === State.tmplIdx ? ' is-selected' : '');
+      d.innerHTML = '<img class="tmpl-img" src="' + t.img + '" alt="' + t.name + '" loading="lazy">'
+        + '<div class="tmpl-overlay"></div><div class="tmpl-label">' + t.name + '</div>'
+        + '<div class="tmpl-check"><i class="fas fa-check" style="font-size:6px;color:#1a1a2e"></i></div>';
+      d.addEventListener('click', () => { State.tmplIdx = i; this._renderTemplates(State.occasion); this.live(); });
+      grid.appendChild(d);
+    });
+  },
+
+  /* Live render: rebuild fully on structural change, patch text otherwise (no image flicker) */
+  live() {
+    const d = collectInputs();
+    const sk = State.occasion + '|' + State.tmplIdx + '|' + State.layout + '|' + State.theme;
+    if (sk !== State._structKey || !document.getElementById('greetingCard')) {
+      State._structKey = sk;
+      this.renderFull(d);
+    } else {
+      this.patchText(d);
+      State.ready = true; setExport(true);
+    }
+  },
+
+  renderFull(d) {
+    CardRenderer.render(d);
+    State.ready = true; setExport(true);
+    setTimeout(scaleCard, 60);
+  },
+
+  patchText(d) {
+    const card = document.getElementById('greetingCard');
+    if (!card) { this.renderFull(d); return; }
+    const set = (sel, html) => { const e = card.querySelector(sel); if (e) e.innerHTML = html; };
+    set('.cb-dear', 'Dear ' + d.name + ',');
+    set('.cb-title', d.titleHTML);
+    set('.cb-msg', d.msgText);
+    set('.cb-sig-name', d.sigName);
+    set('.cb-sig-role', d.sigRoleHTML);
+    const firmEl = card.querySelector('.cb-firm');
+    if (firmEl) { firmEl.innerHTML = d.firm || ''; firmEl.style.display = d.firm ? '' : 'none'; }
+  },
+
+  generate() {
+    const custom = (document.getElementById('fMsg').value || '').trim();
+    if (!custom) regenAuto();
+    State._structKey = null;
+    this.live();
+    toast(custom ? 'Card refreshed.' : 'Fresh wording applied.', 'success');
+  },
+
+  smartMsg() {
+    const btn = document.getElementById('btnAI');
+    btn.classList.add('loading'); btn.disabled = true;
+    setTimeout(() => {
+      try {
+        document.getElementById('fMsg').value = MSG.generate(State.occasion, State.tone);
+        this.live();
+        toast('Message generated - personalise it freely!', 'success');
+      } catch (e) { toast('Could not generate a message. Please try again.', 'error'); }
+      finally { btn.classList.remove('loading'); btn.disabled = false; }
+    }, 600 + Math.floor(Math.random() * 400));
+  },
+
+  reset() {
+    document.getElementById('fOccasion').value = 'birthday';
+    document.getElementById('fName').value     = 'Mr. Arpit Sharma';
+    const ff = document.getElementById('fFirm'); if (ff) ff.value = '';
+    document.getElementById('fShowroom').value = 'Pune Flagship';
+    document.getElementById('fYear').value     = '5';
+    document.getElementById('fWorkYear').value = '5';
+    const fh = document.getElementById('fHeadline'); if (fh) fh.value = '';
+    document.getElementById('fMsg').value      = '';
+    State.occasion='birthday'; State.tmplIdx=0; State.layout='classic'; State.theme='cream'; State.tone='professional';
+    document.querySelectorAll('.layout-opt').forEach(x=>x.classList.remove('is-selected'));
+    document.querySelector('[data-layout="classic"]').classList.add('is-selected');
+    document.querySelectorAll('.theme-swatch').forEach(x=>x.classList.remove('is-selected'));
+    document.querySelector('[data-theme="cream"]').classList.add('is-selected');
+    document.querySelectorAll('.tone-opt').forEach(x=>x.classList.remove('is-selected'));
+    document.querySelector('[data-tone="professional"]').classList.add('is-selected');
+    this._toggleCond('birthday');
+    delete document.getElementById('tmplGrid').dataset.occ;
+    this._renderTemplates('birthday');
+    document.querySelectorAll('.field-error.show').forEach(e => e.classList.remove('show'));
+    document.querySelectorAll('.form-ctrl.is-error').forEach(e => e.classList.remove('is-error'));
+    regenAuto();
+    State._structKey = null;
+    this.live();
+    toast('Greeting reset to defaults.', 'info');
+  }
+};
+
+/* LOGO / SIGNATURE block builders (uploaded raster -> <img>; else inline SVG fallback) */
+function logoHTML() {
+  if (LOGO_B64) return '<img class="card-logo" src="' + LOGO_B64 + '" alt="AIS Windows">';
+  return AIS_LOGO.replace('<svg ', '<svg class="card-logo" ');
+}
+function sigBlockHTML(isDark) {
+  if (SIG_B64) return '<img class="cb-sig-img" src="' + SIG_B64 + '" alt="Signature">';
+  return (isDark ? SIG_LIGHT : SIG_DARK).replace('<svg ', '<svg class="cb-sig-svg" ');
+}
+
+/* CARD RENDERER */
+const CardRenderer = {
+  render(d) {
+    const tmpl = d.tmpl, name = d.name, titleHTML = d.titleHTML, msgText = d.msgText;
+    const layout = d.layout, theme = d.theme;
+    CARD_CTX = {
+      sigName:     d.sigName     || 'Sanju G',
+      sigRoleHTML: d.sigRoleHTML || 'HEAD &#x2013; CHANNEL MANAGEMENT<br>ACTIVATION &amp; ENABLEMENT',
+      firm:        d.firm        || ''
+    };
+    const isDark = layout === 'fullbleed' || theme === 'midnight' || theme === 'emerald';
+    let inner;
+    if (layout === 'fullbleed')    inner = this._fullbleed(tmpl, name, titleHTML, msgText, isDark);
+    else if (layout === 'minimal') inner = this._minimal(tmpl, name, titleHTML, msgText, isDark);
+    else                           inner = this._classic(tmpl, name, titleHTML, msgText, isDark);
+
+    const stage = document.getElementById('cardStage');
+    const empty = document.getElementById('stageEmpty');
+    if (empty) empty.style.display = 'none';
+    const old = document.getElementById('greetingCard');
+    if (old) old.parentNode.removeChild(old);
+    const card = document.createElement('div');
+    card.id = 'greetingCard';
+    card.className = 'layout-' + layout + ' theme-' + theme;
+    card.innerHTML = inner;
+    stage.appendChild(card);
+  },
+
+  _classic(tmpl, name, titleHTML, msgText, isDark) {
+    return '<div class="ci-zone">'
+      + '<img class="ci-bg" src="' + tmpl.img + '" alt="">'
+      + '<div class="ci-overlay"></div>'
+      + '<div class="ci-corner ci-corner-tl">' + svgCorner() + '</div>'
+      + '<div class="ci-corner ci-corner-tr">' + svgCorner() + '</div>'
+      + '<div class="ci-corner ci-corner-br">' + svgCorner() + '</div>'
+      + '<div class="ci-tag">' + tmpl.occTag + '</div>'
+      + '</div>'
+      + '<div class="cb">'
+      + '<div class="cb-header">' + logoHTML() + makeBadge(tmpl) + '</div>'
+      + makeShared(tmpl, name, titleHTML, msgText, isDark)
+      + '</div>'
+      + makeFooter()
+      + '<div class="card-frame"></div>';
+  },
+
+  _fullbleed(tmpl, name, titleHTML, msgText, isDark) {
+    return '<div class="fb-bg"><img src="' + tmpl.img + '" alt=""></div>'
+      + '<div class="fb-gradient"></div>'
+      + '<div class="fb-content">'
+      + '<div class="fb-top">' + logoHTML() + makeBadge(tmpl) + '</div>'
+      + '<div class="fb-body">' + makeShared(tmpl, name, titleHTML, msgText, isDark) + '</div>'
+      + '</div>'
+      + makeFooter()
+      + '<div class="card-frame"></div>';
+  },
+
+  _minimal(tmpl, name, titleHTML, msgText, isDark) {
+    return '<div class="mn-bg"></div>'
+      + '<div class="mn-pattern"></div>'
+      + '<div class="mn-content">'
+      + '<div class="mn-header">' + logoHTML() + makeBadge(tmpl) + '</div>'
+      + '<div class="mn-emblem"><span class="mn-emblem-icon">' + tmpl.icon + '</span></div>'
+      + makeShared(tmpl, name, titleHTML, msgText, isDark)
+      + '</div>'
+      + makeFooter()
+      + '<div class="card-frame"></div>';
+  }
+};
+
+/* FILENAME helper */
+function getFilename(ext) {
+  const occ = (State.occasion || 'greeting');
+  let nm = (((document.getElementById('fName') || {}).value) || 'partner').trim()
+            .replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '').toLowerCase();
+  if (!nm) nm = 'partner';
+  const dt = new Date();
+  const stamp = '' + dt.getFullYear() + ('0' + (dt.getMonth() + 1)).slice(-2) + ('0' + dt.getDate()).slice(-2);
+  return 'AIS_' + occ + '_' + nm + '_' + stamp + '.' + ext;
+}
+
+/* COVER-CROP fix: html2canvas ignores object-fit/object-position, so we pre-crop each
+   remote photo on a canvas (replicating cover + position) before rendering. */
+async function coverCropImages(root) {
+  const imgs = Array.prototype.slice.call(root.querySelectorAll('img'))
+    .filter(im => /^https?:/i.test(im.getAttribute('src') || ''));
+  await Promise.all(imgs.map(im => new Promise(resolve => {
+    let box = im.getBoundingClientRect();
+    let boxW = box.width, boxH = box.height;
+    if (!boxW || !boxH) {
+      const p = im.parentElement;
+      if (p) { const pb = p.getBoundingClientRect(); boxW = pb.width || 490; boxH = pb.height || 265; }
+      else { boxW = 490; boxH = 265; }
+    }
+    let posX = 0.5, posY = 0.5;
+    try {
+      const op = (getComputedStyle(im).objectPosition || '50% 50%').split(' ');
+      const parsePos = (v, fb) => {
+        if (v == null) return fb;
+        v = v.trim();
+        if (v === 'left' || v === 'top') return 0;
+        if (v === 'right' || v === 'bottom') return 1;
+        if (v === 'center') return 0.5;
+        if (v.endsWith('%')) { const n = parseFloat(v); return isNaN(n) ? fb : Math.max(0, Math.min(1, n / 100)); }
+        return fb;
+      };
+      posX = parsePos(op[0], 0.5);
+      posY = parsePos(op[1], 0.5);
+    } catch (e) {}
+    const srcURL = im.getAttribute('src');
+    const loader = new Image();
+    loader.crossOrigin = 'anonymous';
+    loader.onload = () => {
+      try {
+        const iw = loader.naturalWidth, ih = loader.naturalHeight;
+        if (!iw || !ih) { resolve(); return; }
+        const scale = 3;
+        const cw = Math.max(1, Math.round(boxW * scale)), ch = Math.max(1, Math.round(boxH * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        const ctx = canvas.getContext('2d');
+        const boxRatio = boxW / boxH, imgRatio = iw / ih;
+        let sx, sy, sw, sh;
+        if (imgRatio > boxRatio) { sh = ih; sw = ih * boxRatio; sx = (iw - sw) * posX; sy = 0; }
+        else                     { sw = iw; sh = iw / boxRatio; sx = 0; sy = (ih - sh) * posY; }
+        ctx.drawImage(loader, sx, sy, sw, sh, 0, 0, cw, ch);
+        im.src = canvas.toDataURL('image/jpeg', 0.94);
+        im.style.objectFit = 'fill';
+        im.style.objectPosition = 'center';
+      } catch (e) { /* CORS-tainted: keep original image */ }
+      resolve();
+    };
+    loader.onerror = () => {
+      const p = im.parentElement;
+      if (p) p.style.background = 'linear-gradient(135deg,#c9a03d,#a07c1e)';
+      im.removeAttribute('src');
+      resolve();
+    };
+    loader.src = srcURL + (srcURL.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
+  })));
+}
+
+/* Build an off-screen, export-ready clone of the current card */
+async function buildClone() {
+  const card = document.getElementById('greetingCard');
+  if (!card) throw new Error('No card to export');
+  const W = 490, H = 686;
+  // Measure the on-screen (correctly laid-out) message height so the export can't reflow taller.
+  const liveMsg = card.querySelector('.cb-msg');
+  const lockMsgH = liveMsg ? liveMsg.offsetHeight : 0;
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:' + W + 'px;height:' + H + 'px;z-index:-1;';
+  const clone = card.cloneNode(true);
+  clone.id = 'greetingCardClone';
+  clone.style.transform = 'none';
+  clone.style.margin = '0';
+  clone.style.marginBottom = '0';
+  clone.style.width = W + 'px';
+  clone.style.height = H + 'px';
+  clone.style.animation = 'none';
+  // Pin the message box to its live height (html2canvas ignores flex-shrink), keeping the
+  // signature and footer in the same positions as the on-screen preview.
+  const cloneMsg = clone.querySelector('.cb-msg');
+  if (cloneMsg && lockMsgH) {
+    cloneMsg.style.flex = '0 0 auto';
+    cloneMsg.style.height = lockMsgH + 'px';
+    cloneMsg.style.overflow = 'hidden';
+  }
+  wrap.appendChild(clone);
+  document.body.appendChild(wrap);
+  await coverCropImages(clone);
+  await new Promise(r => setTimeout(r, 500));
+  return { wrap: wrap, clone: clone, W: W, H: H };
+}
+
+/* EXPORTER - PDF / PNG / Copy / Share, all from one high-res render */
+const Exporter = {
+  async _renderCanvas() {
+    const built = await buildClone();
+    try {
+      return await html2canvas(built.clone, {
+        scale: 3, useCORS: true, backgroundColor: '#fdfbf6',
+        width: built.W, height: built.H, windowWidth: built.W, windowHeight: built.H, logging: false
+      });
+    } finally {
+      if (built.wrap && built.wrap.parentNode) built.wrap.parentNode.removeChild(built.wrap);
+    }
+  },
+
+  async pdf() {
+    if (!State.ready) { toast('Generate a card first.', 'error'); return; }
+    showLoader('Building PDF\u2026');
+    try {
+      const canvas = await this._renderCanvas();
+      const jsPDF = (window.jspdf || {}).jsPDF;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: [360, 504] });
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 360, 504);
+      pdf.save(getFilename('pdf'));
+      toast('PDF downloaded.', 'success');
+    } catch (e) { console.error(e); toast('PDF export failed. Please retry once images load.', 'error'); }
+    finally { hideLoader(); }
+  },
+
+  async image() {
+    if (!State.ready) { toast('Generate a card first.', 'error'); return; }
+    showLoader('Rendering image\u2026');
+    try {
+      const canvas = await this._renderCanvas();
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = getFilename('png');
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      toast('Image downloaded (' + canvas.width + '\xd7' + canvas.height + 'px).', 'success');
+    } catch (e) { console.error(e); toast('Image export failed. Please retry once images load.', 'error'); }
+    finally { hideLoader(); }
+  },
+
+  async copy() {
+    if (!State.ready) { toast('Generate a card first.', 'error'); return; }
+    if (!navigator.clipboard || typeof ClipboardItem === 'undefined') {
+      toast('Clipboard not available here - use Save PNG instead.', 'error'); return;
+    }
+    showLoader('Copying image\u2026');
+    try {
+      const canvas = await this._renderCanvas();
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      if (!blob) throw new Error('toBlob failed');
+      await navigator.clipboard.write([ new ClipboardItem({ 'image/png': blob }) ]);
+      toast('Image copied - paste into WhatsApp, email, etc.', 'success');
+    } catch (e) { console.error(e); toast('Copy failed - use Save PNG instead.', 'error'); }
+    finally { hideLoader(); }
+  },
+
+  async share() {
+    if (!State.ready) { toast('Generate a card first.', 'error'); return; }
+    showLoader('Preparing to share\u2026');
+    let file;
+    try {
+      const canvas = await this._renderCanvas();
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      if (!blob) throw new Error('toBlob failed');
+      file = new File([blob], getFilename('png'), { type: 'image/png' });
+    } catch (e) { hideLoader(); console.error(e); toast('Could not prepare the image to share.', 'error'); return; }
+    hideLoader();
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+        await navigator.share({ files: [file], title: 'AIS Windows Greeting', text: 'A greeting from AIS Windows.' });
+        return;
+      }
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      console.error(e);
+    }
+    try {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url; a.download = file.name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      toast('Direct share not supported here - image downloaded instead.', 'info');
+    } catch (e2) { console.error(e2); toast('Share is unavailable on this device.', 'error'); }
+  }
+};
+
+/* BOOT */
+document.addEventListener('DOMContentLoaded', async () => {
+  try { await preloadLocalAssets(); } catch (e) {}
+  bindAssetUploads();
+  UI.init();
+});
 </script>
 </body>
 </html>
